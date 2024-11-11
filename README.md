@@ -29,7 +29,7 @@ Capturing Everyone's POV one camera at a time
 Will *technically* work if it's only installed by the host, however all players must install the mod in order to see camera colors and pickup text
 
 ## Contributing
-If you have a bug report, feature request, enhancement, etc, feel free to submit an issue on the GitHub page! Any support helps.<br>
+If you have a bug report, feature request, enhancement, etc, feel free to [submit an issue on the GitHub page!](https://github.com/gingerphoenix10/ContentPOVs/issues) Any support helps.<br>
 If you have any programming knowledge and would like to help out with the project, feel free to fork the project and submit a pull request to help resolve issues, requests, etc.
 
 ## Credits
