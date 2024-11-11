@@ -130,6 +130,7 @@ public class POVPlugin : BaseUnityPlugin
                 if (player.CustomProperties["SteamID"] == null) continue;
                 Pickup cam = PickupHandler.CreatePickup((byte)1, new ItemInstanceData(Guid.NewGuid()), new Vector3(-14.805f - (i * 0.487f), 2.418f, 8.896f - (i * 0.487f)), Quaternion.Euler(0f, 315f, 0f));
                 ItemInstance itemInstance = cam.itemInstance;
+
                 POVCamera camera = new POVCamera();
                 camera.plrID = player.CustomProperties["SteamID"] as string;
                 itemInstance.instanceData.m_dataEntries.Add(camera);
@@ -142,6 +143,11 @@ public class POVPlugin : BaseUnityPlugin
             foreach (ItemDataEntry entry in entries)
             {
                 if (entry is not POVCamera povCamera) continue;
+                if (povCamera.plrID == "-1")
+                {
+                    hasPov = true;
+                    break;
+                }
                 Player matched = new();
                 foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsOfType<PlayerVisor>())
                 {
@@ -177,8 +183,21 @@ public class POVPlugin : BaseUnityPlugin
                 }
                 Canvas cameraUI = (Canvas)typeof(VideoCamera).GetField("m_cameraUI", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(cam);
                 Transform canvas = cameraUI.transform;
-                var filmGroup = canvas.Find("POVsText");
-                var userText = filmGroup.Find("Text").GetComponent<TextMeshProUGUI>();
+                Transform filmGroup = canvas.Find("POVsText");
+                TextMeshProUGUI userText;
+                if (!filmGroup)
+                {
+                    filmGroup = new GameObject("POVsText").AddComponent<CanvasGroup>().transform;
+                    filmGroup.SetParent(canvas, false);
+                    filmGroup.localPosition = new Vector3(250, -400, 0);
+                    filmGroup.localScale = Vector3.one * 1.5f;
+
+                    userText = new GameObject("Text").AddComponent<TextMeshProUGUI>();
+                    userText.enableWordWrapping = false;
+                    userText.alignment = TextAlignmentOptions.BottomRight;
+                    userText.transform.SetParent(filmGroup.transform, false);
+                }
+                userText = filmGroup.Find("Text").GetComponent<TextMeshProUGUI>();
                 if (nameDisplay) userText.text = matched.GetComponent<PhotonView>().Owner.NickName;
                 else userText.text = "";
                 hasPov = true;
@@ -186,15 +205,15 @@ public class POVPlugin : BaseUnityPlugin
             }
             if (!hasPov)
             {
-                Logger.LogInfo("A camera without the ContentPOVs info was found. Assuming it's just the default camera, so deleting");
-                Destroy(cam.gameObject);
-                //Was easier just to create a ContentPOVs camera on start rather than to convert the original camera to host's
+                POVCamera globalCamera = new();
+                globalCamera.plrID = "-1";
+                cam.GetComponent<ItemInstance>().instanceData.m_dataEntries.Add(globalCamera);
             }
         }
         foreach (ItemInstance item in UnityEngine.Object.FindObjectsOfType<ItemInstance>())
         {
             if (item.item.id != 2) continue;
-            bool hasPov = false;
+            string hasPov = "-1";
             HashSet<ItemDataEntry> entries = item.instanceData.m_dataEntries;
             foreach (ItemDataEntry entry in entries)
             {
@@ -213,9 +232,10 @@ public class POVPlugin : BaseUnityPlugin
                 Transform objects = item.gameObject.transform.Find("VideoCam");
                 Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
                 Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
-                hasPov = true;
+                hasPov = povCamera.plrID;
                 if (!matched)
                 {
+                    hasPov = "-2";
                     if (colorable)
                     {
                         cubeRenderer.materials[0].color = Color.black;
@@ -246,7 +266,7 @@ public class POVPlugin : BaseUnityPlugin
                 }
                 break;
             }
-            if (!hasPov)
+            if (hasPov == "-2")
             {
 
                 if (colorable)
@@ -264,6 +284,24 @@ public class POVPlugin : BaseUnityPlugin
                 if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && nameable)
                 {
                     item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
+                }
+            } else if (hasPov == "-1")
+            {
+                if (colorable)
+                {
+                    Transform objects = item.gameObject.transform.Find("VideoCam");
+                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
+                    cubeRenderer.materials[0].color = Color.black;
+                    cubeRenderer.materials[1].color = Color.black;
+
+                    cube2Renderer.materials[0].color = Color.black;
+                    cube2Renderer.materials[1].color = Color.black;
+                }
+
+                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && nameable)
+                {
+                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Broken Camera";
                 }
             }
         }
@@ -347,7 +385,7 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && ownerPickup)
+                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && ownerPickup && povCamera.plrID != "-1")
                     {
                         __instance.m_photonView.RPC("RPC_FailedToPickup", PhotonNetwork.GetPhotonView(photonView).GetComponent<Player>().refs.view.Owner);
                         return false;
@@ -360,7 +398,7 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && ownerPickupBroken)
+                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && ownerPickupBroken && povCamera.plrID != "-1")
                     {
                         __instance.m_photonView.RPC("RPC_FailedToPickup", PhotonNetwork.GetPhotonView(photonView).GetComponent<Player>().refs.view.Owner);
                         return false;
@@ -370,6 +408,19 @@ public class POVPlugin : BaseUnityPlugin
             }
             return true;
         }
+
+        [HarmonyPatch(typeof(PickupSpawner))]
+        internal static class SpawnerPatch
+        {
+            [HarmonyPrefix]
+            [HarmonyPatch("SpawnMe")]
+            internal static bool Spawn(bool force, PickupSpawner __instance)
+            {
+                if (__instance.ItemToSpawn.id == 1) return false;
+                return true;
+            }
+        }
+
         /*[HarmonyPrefix]
         [HarmonyPatch("Interact")]
         internal static bool Interact(Player player, Pickup __instance)
@@ -400,26 +451,6 @@ public class POVPlugin : BaseUnityPlugin
         internal static void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
         {
             if (SurfaceNetworkHandler.HasStarted) awaitingCamera.Add(newPlayer);
-        }
-    }
-    [HarmonyPatch(typeof(VideoCamera))]
-    internal static class CameraPatch
-    {
-        [HarmonyPostfix]
-        [HarmonyPatch("Start")]
-        internal static void CameraStart(VideoCamera __instance)
-        {
-            Canvas cameraUI = (Canvas)typeof(VideoCamera).GetField("m_cameraUI", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
-            Transform canvas = cameraUI.transform;
-            var filmGroup = new GameObject("POVsText").AddComponent<CanvasGroup>();
-            filmGroup.transform.SetParent(canvas, false);
-            filmGroup.transform.localPosition = new Vector3(250, -400, 0);
-            filmGroup.transform.localScale = Vector3.one * 1.5f;
-
-            var userText = new GameObject("Text").AddComponent<TextMeshProUGUI>();
-            userText.enableWordWrapping = false;
-            userText.alignment = TextAlignmentOptions.BottomRight;
-            userText.transform.SetParent(filmGroup.transform, false);
         }
     }
 }
