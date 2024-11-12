@@ -63,7 +63,6 @@
     <Reference Include="Zorro.Settings.Runtime">
       <HintPath>.\libs\Zorro.Settings.Runtime.dll</HintPath>
     </Reference>
-    <PackageReference Include="ContentWarning.GameLibs.Steam" Version="*-*" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- CI-Specific References -->
@@ -71,6 +70,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Content Warning_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="$(CI) == 'true'">
+    <PackageReference Include="ContentWarning.GameLibs.Steam" Version="*-*" PrivateAssets="all" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(CI) != 'true'">
