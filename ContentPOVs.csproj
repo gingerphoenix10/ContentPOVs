@@ -63,9 +63,9 @@
     <Reference Include="Zorro.Settings.Runtime">
       <HintPath>.\libs\Zorro.Settings.Runtime.dll</HintPath>
     </Reference>
+    <PackageReference Include="ContentWarning.GameLibs.Steam" Version="*-*" PrivateAssets="all" />
   </ItemGroup>
 
-  <PackageReference Include="ContentWarning.GameLibs.Steam" Version="*-*" PrivateAssets="all" />
   <!-- CI-Specific References -->
   <ItemGroup Condition="$(CI) == 'true'">
     <Reference Include="Assembly-CSharp">
