@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 using Photon.Pun;
@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Reflection;
 using ContentSettings.API.Settings;
 using ContentSettings.API.Attributes;
+using MyceliumNetworking;
 
 namespace ContentPOVs;
 
@@ -41,6 +42,7 @@ public class OnlyOwnerPickup : BoolSetting, ICustomSetting
     public override void ApplyValue()
     {
         POVPlugin.ownerPickup = Value;
+        POVPlugin.UpdateConfig();
     }
 
     public string GetDisplayName() => "Only owner can pickup camera";
@@ -54,6 +56,7 @@ public class OnlyOwnerPickupBroken : BoolSetting, ICustomSetting
     public override void ApplyValue()
     {
         POVPlugin.ownerPickupBroken = Value;
+        POVPlugin.UpdateConfig();
     }
 
     public string GetDisplayName() => "Only owner can pickup broken camera";
@@ -66,9 +69,10 @@ public class CameraColorable : BoolSetting, ICustomSetting
     public override void ApplyValue()
     {
         POVPlugin.colorable = Value;
+        POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Match camera color to player's visor color (doesn't sync)";
+    public string GetDisplayName() => "Match camera color to player's visor color";
 
     public override bool GetDefaultValue() => true;
 }
@@ -79,9 +83,10 @@ public class CameraNameable : BoolSetting, ICustomSetting
     public override void ApplyValue()
     {
         POVPlugin.nameable = Value;
+        POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Show user's name while hovering over camera (doesn't sync)";
+    public string GetDisplayName() => "Show user's name while hovering over camera";
 
     public override bool GetDefaultValue() => true;
 }
@@ -92,9 +97,10 @@ public class CameraNameDisplay : BoolSetting, ICustomSetting
     public override void ApplyValue()
     {
         POVPlugin.nameDisplay = Value;
+        POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Display the camera's owner at the bottom right of recordings (doesn't sync)";
+    public string GetDisplayName() => "Display the camera's owner at the bottom right of recordings";
 
     public override bool GetDefaultValue() => true;
 }
@@ -102,9 +108,12 @@ public class CameraNameDisplay : BoolSetting, ICustomSetting
 [ContentWarningPlugin("com.gingerphoenix10.povs", "ContentPOVs", true)]
 [BepInPlugin("com.gingerphoenix10.povs", "ContentPOVs", "1.0.0")]
 [BepInDependency("hyydsz-ShopUtils")]
+[BepInDependency("RugbugRedfern.MyceliumNetworking")]
 //[BepInDependency("RedstoneWizard08.ConfigurableWarning")]
 public class POVPlugin : BaseUnityPlugin
 {
+    public const uint modId = 987235198u;
+    
     internal static new ManualLogSource Logger;
     private static readonly Harmony Patcher = new("com.gingerphoenix10.povs");
     private static List<Photon.Realtime.Player> awaitingCamera = new List<Photon.Realtime.Player>();
@@ -113,11 +122,53 @@ public class POVPlugin : BaseUnityPlugin
     internal static bool colorable = true;
     internal static bool nameable = true;
     internal static bool nameDisplay = true;
+    internal static bool host_ownerPickup = true;
+    internal static bool host_ownerPickupBroken = false;
+    internal static bool host_colorable = true;
+    internal static bool host_nameable = true;
+    internal static bool host_nameDisplay = true;
+    internal static void UpdateConfig()
+    {
+        MyceliumNetwork.SetLobbyData("ownerPickup", ownerPickup);
+        MyceliumNetwork.SetLobbyData("ownerPickupBroken", ownerPickupBroken);
+        MyceliumNetwork.SetLobbyData("colorable", colorable);
+        MyceliumNetwork.SetLobbyData("nameable", nameable);
+        MyceliumNetwork.SetLobbyData("nameDisplay", nameDisplay);
+        LoadConfig();
+    }
+    internal static void LoadConfig()
+    {
+        host_ownerPickup = MyceliumNetwork.GetLobbyData<bool>("ownerPickup");
+        host_ownerPickupBroken = MyceliumNetwork.GetLobbyData<bool>("ownerPickupBroken");
+        host_colorable = MyceliumNetwork.GetLobbyData<bool>("colorable");
+        host_nameable = MyceliumNetwork.GetLobbyData<bool>("nameable");
+        host_nameDisplay = MyceliumNetwork.GetLobbyData<bool>("nameDisplay");
+    }
     private void Awake()
     {
         Logger = base.Logger;
         Patcher.PatchAll();
         Entries.RegisterEntry(typeof(POVCamera));
+        MyceliumNetwork.RegisterLobbyDataKey("ownerPickup");
+        MyceliumNetwork.RegisterLobbyDataKey("ownerPickupBroken");
+        MyceliumNetwork.RegisterLobbyDataKey("colorable");
+        MyceliumNetwork.RegisterLobbyDataKey("nameable");
+        MyceliumNetwork.RegisterLobbyDataKey("nameDisplay");
+        MyceliumNetwork.LobbyEntered += delegate
+        {
+            if (MyceliumNetwork.IsHost)
+            {
+                UpdateConfig();
+            }
+            else
+            {
+                LoadConfig();
+            }
+        };
+        MyceliumNetwork.LobbyDataUpdated += delegate
+        {
+            if (!MyceliumNetwork.IsHost) LoadConfig();
+        };
     }
     private void Update()
     {
@@ -165,7 +216,7 @@ public class POVPlugin : BaseUnityPlugin
                     Destroy(cam.gameObject);
                     break;
                 }
-                if (colorable)
+                if (host_colorable)
                 {
                     Transform objects = cam.transform.Find("VideoCam");
                     Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
@@ -176,10 +227,25 @@ public class POVPlugin : BaseUnityPlugin
                     cube2Renderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
                     cube2Renderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
                 }
+                else
+                {
+                    Transform objects = cam.transform.Find("VideoCam");
+                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                    cubeRenderer.materials[0].color = Color.black;
+                    cubeRenderer.materials[1].color = Color.black;
 
-                if (cam.transform.parent && cam.transform.parent.GetComponent<Pickup>() != null && nameable)
+                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
+                    cube2Renderer.materials[0].color = Color.black;
+                    cube2Renderer.materials[1].color = Color.black;
+                }
+
+                if (cam.transform.parent && cam.transform.parent.GetComponent<Pickup>() != null && host_nameable)
                 {
                     cam.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Camera";
+                }
+                else
+                {
+                    cam.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Camera";
                 }
                 Canvas cameraUI = (Canvas)typeof(VideoCamera).GetField("m_cameraUI", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(cam);
                 Transform canvas = cameraUI.transform;
@@ -198,7 +264,7 @@ public class POVPlugin : BaseUnityPlugin
                     userText.transform.SetParent(filmGroup.transform, false);
                 }
                 userText = filmGroup.Find("Text").GetComponent<TextMeshProUGUI>();
-                if (nameDisplay) userText.text = matched.GetComponent<PhotonView>().Owner.NickName;
+                if (host_nameDisplay) userText.text = matched.GetComponent<PhotonView>().Owner.NickName;
                 else userText.text = "";
                 hasPov = true;
                 break;
@@ -236,22 +302,20 @@ public class POVPlugin : BaseUnityPlugin
                 if (!matched)
                 {
                     hasPov = "-2";
-                    if (colorable)
-                    {
-                        cubeRenderer.materials[0].color = Color.black;
-                        cubeRenderer.materials[1].color = Color.black;
-
-                        cube2Renderer.materials[0].color = Color.black;
-                        cube2Renderer.materials[1].color = Color.black;
-                    }
-                    if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && nameable)
+                    cubeRenderer.materials[0].color = Color.black;
+                    cubeRenderer.materials[1].color = Color.black;
+                    if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
                     {
                         item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
+                    }
+                    else
+                    {
+                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
                     }
                     break;
                 }
 
-                if (colorable)
+                if (host_colorable)
                 {
                     cubeRenderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
                     cubeRenderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
@@ -259,17 +323,40 @@ public class POVPlugin : BaseUnityPlugin
                     cube2Renderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
                     cube2Renderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
                 }
+                else
+                {
+                    cubeRenderer.materials[0].color = Color.black;
+                    cubeRenderer.materials[1].color = Color.black;
 
-                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && nameable)
+                    cube2Renderer.materials[0].color = Color.black;
+                    cube2Renderer.materials[1].color = Color.black;
+                }
+
+                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
                 {
                     item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Broken Camera";
+                }
+                else
+                {
+                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
                 }
                 break;
             }
             if (hasPov == "-2")
             {
 
-                if (colorable)
+                if (host_colorable)
+                {
+                    Transform objects = item.gameObject.transform.Find("VideoCam");
+                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
+                    cubeRenderer.materials[0].color = Color.black;
+                    cubeRenderer.materials[1].color = Color.black;
+
+                    cube2Renderer.materials[0].color = Color.black;
+                    cube2Renderer.materials[1].color = Color.black;
+                }
+                else
                 {
                     Transform objects = item.gameObject.transform.Find("VideoCam");
                     Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
@@ -281,27 +368,28 @@ public class POVPlugin : BaseUnityPlugin
                     cube2Renderer.materials[1].color = Color.black;
                 }
 
-                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && nameable)
+                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
                 {
                     item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
                 }
+                else
+                {
+                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
+                }
             } else if (hasPov == "-1")
             {
-                if (colorable)
-                {
-                    Transform objects = item.gameObject.transform.Find("VideoCam");
-                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
-                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
-                    cubeRenderer.materials[0].color = Color.black;
-                    cubeRenderer.materials[1].color = Color.black;
+                Transform objects = item.gameObject.transform.Find("VideoCam");
+                Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
+                cubeRenderer.materials[0].color = Color.black;
+                cubeRenderer.materials[1].color = Color.black;
 
-                    cube2Renderer.materials[0].color = Color.black;
-                    cube2Renderer.materials[1].color = Color.black;
-                }
+                cube2Renderer.materials[0].color = Color.black;
+                cube2Renderer.materials[1].color = Color.black;
 
-                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && nameable)
+                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
                 {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Broken Camera";
+                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
                 }
             }
         }
@@ -385,7 +473,7 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && ownerPickup && povCamera.plrID != "-1")
+                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && host_ownerPickup && povCamera.plrID != "-1")
                     {
                         __instance.m_photonView.RPC("RPC_FailedToPickup", PhotonNetwork.GetPhotonView(photonView).GetComponent<Player>().refs.view.Owner);
                         return false;
@@ -398,7 +486,7 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && ownerPickupBroken && povCamera.plrID != "-1")
+                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && host_ownerPickupBroken && povCamera.plrID != "-1")
                     {
                         __instance.m_photonView.RPC("RPC_FailedToPickup", PhotonNetwork.GetPhotonView(photonView).GetComponent<Player>().refs.view.Owner);
                         return false;
@@ -421,7 +509,7 @@ public class POVPlugin : BaseUnityPlugin
             }
         }
 
-        /*[HarmonyPrefix]
+        [HarmonyPrefix]
         [HarmonyPatch("Interact")]
         internal static bool Interact(Player player, Pickup __instance)
         {
@@ -431,18 +519,22 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString()) return false;
+                    if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && host_ownerPickup) return false;
+                    break;
+                }
+            } else if (__instance.itemInstance.item.id == 2) {
+                HashSet<ItemDataEntry> entries = __instance.itemInstance.instanceData.m_dataEntries;
+                foreach (ItemDataEntry entry in entries)
+                {
+                    if (entry is not POVCamera povCamera) continue;
+                    if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && host_ownerPickupBroken) return false;
                     break;
                 }
             }
             return true;
         }
-        
-        Temporarily disabled. Need to check if the host has pickups enabled or not
-
-         */
     }
-
+    
     [HarmonyPatch(typeof(PhotonGameLobbyHandler))]
     internal static class ConnectPatch
     {
@@ -454,4 +546,3 @@ public class POVPlugin : BaseUnityPlugin
         }
     }
 }
-

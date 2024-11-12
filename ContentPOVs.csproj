@@ -33,6 +33,9 @@
     <Reference Include="com.rlabrecque.steamworks.net">
       <HintPath>..\Content Warning_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
     </Reference>
+    <Reference Include="MyceliumNetworkingForCW">
+      <HintPath>..\BepInEx\plugins\MyceliumNetworking\MyceliumNetworkingForCW.dll</HintPath>
+    </Reference>
     <Reference Include="Photon3Unity3D">
       <HintPath>..\Content Warning_Data\Managed\Photon3Unity3D.dll</HintPath>
     </Reference>
