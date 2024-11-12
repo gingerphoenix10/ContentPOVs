@@ -12,8 +12,6 @@ using TMPro;
 using Zorro.Core.Serizalization;
 using System.Text;
 using ShopUtils;
-using UnityEngine.EventSystems;
-using System.ComponentModel;
 using System.Reflection;
 using ContentSettings.API.Settings;
 using ContentSettings.API.Attributes;
