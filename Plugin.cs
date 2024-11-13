@@ -45,7 +45,7 @@ public class OnlyOwnerPickup : BoolSetting, ICustomSetting
 
     public string GetDisplayName() => "Only owner can pickup camera";
 
-    public override bool GetDefaultValue() => true;
+    protected override bool GetDefaultValue() => true;
 }
 
 [SettingRegister("ContentPOVs")]
@@ -59,7 +59,7 @@ public class OnlyOwnerPickupBroken : BoolSetting, ICustomSetting
 
     public string GetDisplayName() => "Only owner can pickup broken camera";
 
-    public override bool GetDefaultValue() => false;
+    protected override bool GetDefaultValue() => false;
 }
 [SettingRegister("ContentPOVs")]
 public class CameraColorable : BoolSetting, ICustomSetting
@@ -72,7 +72,7 @@ public class CameraColorable : BoolSetting, ICustomSetting
 
     public string GetDisplayName() => "Match camera color to player's visor color";
 
-    public override bool GetDefaultValue() => true;
+    protected override bool GetDefaultValue() => true;
 }
 
 [SettingRegister("ContentPOVs")]
@@ -86,7 +86,7 @@ public class CameraNameable : BoolSetting, ICustomSetting
 
     public string GetDisplayName() => "Show user's name while hovering over camera";
 
-    public override bool GetDefaultValue() => true;
+    protected override bool GetDefaultValue() => true;
 }
 
 [SettingRegister("ContentPOVs")]
@@ -100,7 +100,7 @@ public class CameraNameDisplay : BoolSetting, ICustomSetting
 
     public string GetDisplayName() => "Display the camera's owner at the bottom right of recordings";
 
-    public override bool GetDefaultValue() => true;
+    protected override bool GetDefaultValue() => true;
 }
 
 [ContentWarningPlugin("com.gingerphoenix10.povs", "ContentPOVs", true)]

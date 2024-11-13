@@ -32,6 +32,9 @@
 
   <!-- Local References using ContentWarningPath -->
   <ItemGroup>
+    <Reference Include="CommanderCat101.ContentSettings">
+      <HintPath>..\BepInEx\plugins\ContentSettings\CommanderCat101.ContentSettings.dll</HintPath>
+    </Reference>
     <Reference Include="MyceliumNetworkingForCW">
       <HintPath>$(ContentWarningPath)Content Warning_Data\Managed\MyceliumNetworkingForCW.dll</HintPath>
     </Reference>
@@ -43,9 +46,6 @@
     </Reference>
     <Reference Include="PhotonUnityNetworking">
       <HintPath>$(ContentWarningPath)Content Warning_Data\Managed\PhotonUnityNetworking.dll</HintPath>
-    </Reference>
-    <Reference Include="RedstoneWizard08.ConfigurableWarning">
-      <HintPath>$(ContentWarningPath)Content Warning_Data\Managed\RedstoneWizard08.ConfigurableWarning.dll</HintPath>
     </Reference>
     <Reference Include="ShopUtils">
       <HintPath>$(ContentWarningPath)Content Warning_Data\Managed\ShopUtils.dll</HintPath>
