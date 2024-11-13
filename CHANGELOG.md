@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0.6
+- Switched from ConfigurableWarning to ContentSettings for better mod compatibility
+
 ## 1.0.5
 - Added v1.0.4, because I might've forgotten to actually add the updated code ._.
 - Fixed bug where any player could change the server's mod settings

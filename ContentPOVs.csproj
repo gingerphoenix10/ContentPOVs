@@ -79,6 +79,9 @@
 
   <ItemGroup Condition="$(CI) == 'true'">
     <PackageReference Include="ContentWarning.GameLibs.Steam" Version="*-*" PrivateAssets="all" />
+    <Reference Include="CommanderCat101.ContentSettings">
+      <HintPath>./libs/CommanderCat101.ContentSettings.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(CI) != 'true'">
