@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>com.gingerphoenix10.povs</AssemblyName>
     <Product>ContentPOVs</Product>
-    <Version>1.0.0</Version>
+    <Version>1.0.5</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RestoreAdditionalProjectSources>
@@ -82,7 +82,10 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(CI) != 'true'">
-    <Exec Command="@Echo Off&#xD;&#xA;SETLOCAL EnableExtensions&#xD;&#xA;set EXE=Content Warning.exe&#xD;&#xA;set DIR=%ContentWarningPath%Content Warning\steamapps\common\Content Warning&#xD;&#xA;If Not Exist &quot;%DIR%&quot; echo Couldn't find Content Warning. Cannot auto-install mod. &amp;&amp; Exit/B&#xD;&#xA;set MODS=%DIR%\BepInEx\Plugins&#xD;&#xA;set DLL=com.gingerphoenix10.POVs.dll&#xD;&#xA;FOR /F %%x IN ('tasklist /NH /FI &quot;IMAGENAME eq %EXE%&quot;') DO IF %%x == %EXE% (&#xD;&#xA;  taskkill /F /IM &quot;%EXE%&quot;&#xD;&#xA;)&#xD;&#xA;ping 127.0.0.1 -n 2 > nul&#xD;&#xA;if exist &quot;%MODS%\%DLL%&quot; (&#xD;&#xA;  del &quot;%MODS%\%DLL%&quot;&#xD;&#xA;)&#xD;&#xA;ping 127.0.0.1 -n 2 > nul&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;%MODS%&quot;&#xD;&#xA;:loop&#xD;&#xA;if exist &quot;%MODS%\%DLL%&quot; (&#xD;&#xA;  cd &quot;%DIR%&quot;&#xD;&#xA;  ping 127.0.0.1 -n 2 > nul&#xD;&#xA;  start &quot;&quot; /b &quot;%EXE%&quot;&#xD;&#xA;  exit /b 0&#xD;&#xA;) else (&#xD;&#xA;  goto loop&#xD;&#xA;)" />
+    <Exec Command="@Echo Off&#xD;&#xA;SETLOCAL EnableExtensions&#xD;&#xA;set ContentWarningPath=$(ContentWarningPath)&#xD;&#xA;set EXE=Content Warning.exe&#xD;&#xA;set DIR=%25ContentWarningPath%25&#xD;&#xA;&#xD;&#xA;REM Check if the directory exists&#xD;&#xA;if Not Exist &quot;%25DIR%25&quot; (&#xD;&#xA;    echo Couldn't find Content Warning. Cannot auto-install mod.&#xD;&#xA;    exit /B&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;REM Check if process is running and kill if it is&#xD;&#xA;tasklist /FI &quot;IMAGENAME eq %25EXE%25&quot; | find /I &quot;%25EXE%25&quot; &gt; nul&#xD;&#xA;if %25ERRORLEVEL%25 EQU 0 (&#xD;&#xA;    echo %25EXE%25 is running. Terminating process.&#xD;&#xA;    taskkill /F /IM &quot;%25EXE%25&quot;&#xD;&#xA;)&#xD;&#xA;&#xD;&#xA;ping 127.0.0.1 -n 2 &gt; nul&#xD;&#xA;if exist &quot;%25DIR%25\BepInEx\Plugins\com.gingerphoenix10.POVs.dll&quot; (&#xD;&#xA;  del &quot;%25DIR%25\BepInEx\Plugins\com.gingerphoenix10.POVs.dll&quot;&#xD;&#xA;)&#xD;&#xA;ping 127.0.0.1 -n 2 &gt; nul&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;%25DIR%25\BepInEx\Plugins&quot;&#xD;&#xA;:loop&#xD;&#xA;if exist &quot;%25DIR%25\BepInEx\Plugins\com.gingerphoenix10.POVs.dll&quot; (&#xD;&#xA;  cd &quot;%25DIR%25&quot;&#xD;&#xA;  ping 127.0.0.1 -n 2 &gt; nul&#xD;&#xA;  start &quot;&quot; /b &quot;%25EXE%25&quot;&#xD;&#xA;  exit /b 0&#xD;&#xA;) else (&#xD;&#xA;  goto loop&#xD;&#xA;)" />
   </Target>
+
+
+
 
 </Project>

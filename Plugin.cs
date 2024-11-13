@@ -104,14 +104,12 @@ public class CameraNameDisplay : BoolSetting, ICustomSetting
 }
 
 [ContentWarningPlugin("com.gingerphoenix10.povs", "ContentPOVs", true)]
-[BepInPlugin("com.gingerphoenix10.povs", "ContentPOVs", "1.0.0")]
+[BepInPlugin("com.gingerphoenix10.povs", "ContentPOVs", "1.0.5")]
 [BepInDependency("hyydsz-ShopUtils")]
 [BepInDependency("RugbugRedfern.MyceliumNetworking")]
 //[BepInDependency("RedstoneWizard08.ConfigurableWarning")]
 public class POVPlugin : BaseUnityPlugin
 {
-    public const uint modId = 987235198u;
-    
     internal static new ManualLogSource Logger;
     private static readonly Harmony Patcher = new("com.gingerphoenix10.povs");
     private static List<Photon.Realtime.Player> awaitingCamera = new List<Photon.Realtime.Player>();
@@ -127,6 +125,7 @@ public class POVPlugin : BaseUnityPlugin
     internal static bool host_nameDisplay = true;
     internal static void UpdateConfig()
     {
+        if (!MyceliumNetwork.IsHost) return;
         MyceliumNetwork.SetLobbyData("ownerPickup", ownerPickup);
         MyceliumNetwork.SetLobbyData("ownerPickupBroken", ownerPickupBroken);
         MyceliumNetwork.SetLobbyData("colorable", colorable);
@@ -170,7 +169,7 @@ public class POVPlugin : BaseUnityPlugin
     }
     private void Update()
     {
-        if (PhotonNetwork.IsMasterClient)
+        if (MyceliumNetwork.IsHost)
         {
             for (int i = awaitingCamera.Count - 1; i >= 0; i--)
             {
@@ -241,7 +240,7 @@ public class POVPlugin : BaseUnityPlugin
                 {
                     cam.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Camera";
                 }
-                else
+                else if (cam.transform.parent && cam.transform.parent.GetComponent<Pickup>() != null)
                 {
                     cam.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Camera";
                 }
@@ -277,11 +276,16 @@ public class POVPlugin : BaseUnityPlugin
         foreach (ItemInstance item in UnityEngine.Object.FindObjectsOfType<ItemInstance>())
         {
             if (item.item.id != 2) continue;
-            string hasPov = "-1";
+            string hasPov = "-2";
             HashSet<ItemDataEntry> entries = item.instanceData.m_dataEntries;
             foreach (ItemDataEntry entry in entries)
             {
                 if (entry is not POVCamera povCamera) continue;
+                if (povCamera.plrID == "-1")
+                {
+                    hasPov = "-1";
+                    break;
+                }
                 Player matched = new();
                 foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsOfType<PlayerVisor>())
                 {
@@ -343,28 +347,14 @@ public class POVPlugin : BaseUnityPlugin
             if (hasPov == "-2")
             {
 
-                if (host_colorable)
-                {
-                    Transform objects = item.gameObject.transform.Find("VideoCam");
-                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
-                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
-                    cubeRenderer.materials[0].color = Color.black;
-                    cubeRenderer.materials[1].color = Color.black;
+                Transform objects = item.gameObject.transform.Find("VideoCam");
+                Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
+                cubeRenderer.materials[0].color = Color.black;
+                cubeRenderer.materials[1].color = Color.black;
 
-                    cube2Renderer.materials[0].color = Color.black;
-                    cube2Renderer.materials[1].color = Color.black;
-                }
-                else
-                {
-                    Transform objects = item.gameObject.transform.Find("VideoCam");
-                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
-                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
-                    cubeRenderer.materials[0].color = Color.black;
-                    cubeRenderer.materials[1].color = Color.black;
-
-                    cube2Renderer.materials[0].color = Color.black;
-                    cube2Renderer.materials[1].color = Color.black;
-                }
+                cube2Renderer.materials[0].color = Color.black;
+                cube2Renderer.materials[1].color = Color.black;
 
                 if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
                 {
@@ -408,7 +398,7 @@ public class POVPlugin : BaseUnityPlugin
         [HarmonyPatch("RPCM_StartGame")]
         internal static void SpawnOnStartRun()
         {
-            if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
+            if (MyceliumNetwork.IsHost && PhotonNetwork.InRoom)
             {
                 Logger.LogInfo("Called SpawnOnStartRun");
                 SpawnCams();
@@ -419,7 +409,7 @@ public class POVPlugin : BaseUnityPlugin
         [HarmonyPatch("OnSlept")]
         internal static void SpawnOnNewDay()
         {
-            if (PhotonNetwork.IsMasterClient)
+            if (MyceliumNetwork.IsHost)
             {
                 Logger.LogInfo("Called SpawnOnNewDay");
                 SpawnCams();
@@ -471,7 +461,7 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && host_ownerPickup && povCamera.plrID != "-1")
+                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && host_ownerPickup && povCamera.plrID != "-1" && povCamera.plrID != "-2")
                     {
                         __instance.m_photonView.RPC("RPC_FailedToPickup", PhotonNetwork.GetPhotonView(photonView).GetComponent<Player>().refs.view.Owner);
                         return false;
@@ -484,7 +474,7 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && host_ownerPickupBroken && povCamera.plrID != "-1")
+                    if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && host_ownerPickupBroken && povCamera.plrID != "-1" && povCamera.plrID != "-2")
                     {
                         __instance.m_photonView.RPC("RPC_FailedToPickup", PhotonNetwork.GetPhotonView(photonView).GetComponent<Player>().refs.view.Owner);
                         return false;
@@ -517,7 +507,7 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && host_ownerPickup) return false;
+                    if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && host_ownerPickup && povCamera.plrID != "-1" && povCamera.plrID != "-2") return false;
                     break;
                 }
             } else if (__instance.itemInstance.item.id == 2) {
@@ -525,7 +515,7 @@ public class POVPlugin : BaseUnityPlugin
                 foreach (ItemDataEntry entry in entries)
                 {
                     if (entry is not POVCamera povCamera) continue;
-                    if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && host_ownerPickupBroken) return false;
+                    if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && host_ownerPickupBroken && povCamera.plrID != "-1" && povCamera.plrID != "-2") return false;
                     break;
                 }
             }
