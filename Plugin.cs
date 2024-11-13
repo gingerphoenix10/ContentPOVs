@@ -104,7 +104,7 @@ public class CameraNameDisplay : BoolSetting, ICustomSetting
 }
 
 [ContentWarningPlugin("com.gingerphoenix10.povs", "ContentPOVs", true)]
-[BepInPlugin("com.gingerphoenix10.povs", "ContentPOVs", "1.0.5")]
+[BepInPlugin("com.gingerphoenix10.povs", "ContentPOVs", "1.0.6")]
 [BepInDependency("hyydsz-ShopUtils")]
 [BepInDependency("RugbugRedfern.MyceliumNetworking")]
 //[BepInDependency("RedstoneWizard08.ConfigurableWarning")]
