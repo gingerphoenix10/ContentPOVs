@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.0
+- Added score division to balance out gameplay with more cameras
+- Updated README
+
 ## 1.0.6
 - Switched from ConfigurableWarning to ContentSettings for better mod compatibility
 
@@ -11,7 +15,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Fixed bug where any player could change the server's mod settings
 - Fixed purchased broken cameras showing up as "?'s Broken Camera"
 - Fixed GitHub actions build. Now passing
-- Update README
+- Updated README
 
 ## 1.0.4
 - Synced host's configuration with all players

@@ -16,6 +16,7 @@ using System.Reflection;
 using ContentSettings.API.Settings;
 using ContentSettings.API.Attributes;
 using MyceliumNetworking;
+using Zorro.Core;
 
 namespace ContentPOVs;
 
@@ -103,8 +104,22 @@ public class CameraNameDisplay : BoolSetting, ICustomSetting
     protected override bool GetDefaultValue() => true;
 }
 
-[ContentWarningPlugin("com.gingerphoenix10.povs", "ContentPOVs", true)]
-[BepInPlugin("com.gingerphoenix10.povs", "ContentPOVs", "1.0.6")]
+[SettingRegister("ContentPOVs")]
+public class DivideScore : BoolSetting, ICustomSetting
+{
+    public override void ApplyValue()
+    {
+        POVPlugin.scoreDivision = Value;
+        POVPlugin.UpdateConfig();
+    }
+
+    public string GetDisplayName() => "Divide the score you get by the amount of players in the lobby to balance out gameplay";
+
+    protected override bool GetDefaultValue() => true;
+}
+
+[ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, true)]
+[BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 [BepInDependency("hyydsz-ShopUtils")]
 [BepInDependency("RugbugRedfern.MyceliumNetworking")]
 //[BepInDependency("RedstoneWizard08.ConfigurableWarning")]
@@ -118,11 +133,13 @@ public class POVPlugin : BaseUnityPlugin
     internal static bool colorable = true;
     internal static bool nameable = true;
     internal static bool nameDisplay = true;
+    internal static bool scoreDivision = true;
     internal static bool host_ownerPickup = true;
     internal static bool host_ownerPickupBroken = false;
     internal static bool host_colorable = true;
     internal static bool host_nameable = true;
     internal static bool host_nameDisplay = true;
+    internal static bool host_scoreDivision = true;
     internal static void UpdateConfig()
     {
         if (!MyceliumNetwork.IsHost) return;
@@ -131,6 +148,7 @@ public class POVPlugin : BaseUnityPlugin
         MyceliumNetwork.SetLobbyData("colorable", colorable);
         MyceliumNetwork.SetLobbyData("nameable", nameable);
         MyceliumNetwork.SetLobbyData("nameDisplay", nameDisplay);
+        MyceliumNetwork.SetLobbyData("scoreDivision", scoreDivision);
         LoadConfig();
     }
     internal static void LoadConfig()
@@ -140,6 +158,7 @@ public class POVPlugin : BaseUnityPlugin
         host_colorable = MyceliumNetwork.GetLobbyData<bool>("colorable");
         host_nameable = MyceliumNetwork.GetLobbyData<bool>("nameable");
         host_nameDisplay = MyceliumNetwork.GetLobbyData<bool>("nameDisplay");
+        host_scoreDivision = MyceliumNetwork.GetLobbyData<bool>("scoreDivision");
     }
     private void Awake()
     {
@@ -151,6 +170,7 @@ public class POVPlugin : BaseUnityPlugin
         MyceliumNetwork.RegisterLobbyDataKey("colorable");
         MyceliumNetwork.RegisterLobbyDataKey("nameable");
         MyceliumNetwork.RegisterLobbyDataKey("nameDisplay");
+        MyceliumNetwork.RegisterLobbyDataKey("scoreDivision");
         MyceliumNetwork.LobbyEntered += delegate
         {
             if (MyceliumNetwork.IsHost)
@@ -533,4 +553,19 @@ public class POVPlugin : BaseUnityPlugin
             if (SurfaceNetworkHandler.HasStarted) awaitingCamera.Add(newPlayer);
         }
     }
+
+    [HarmonyPatch(typeof(ContentEventFrame))]
+    internal static class ScorePatch
+    {
+        [HarmonyPrefix]
+        [HarmonyPatch("GetScore")]
+        internal static bool GetScore(ContentEventFrame __instance, ref float __result)
+        {
+            if (!host_scoreDivision) return true;
+            __result = SingletonAsset<BigNumbers>.Instance.percentageToScreenToFactorCurve.Evaluate(__instance.seenAmount) * __instance.contentEvent.GetContentValue() / MyceliumNetwork.PlayerCount;
+            return false;
+        }
+
+    }
+
 }
