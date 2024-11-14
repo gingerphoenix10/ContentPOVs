@@ -26,16 +26,16 @@ Capturing Everyone's POV one camera at a time
 ## Installation
 
 ### Mod Manager (Recommended)
-An app like r2modman or the Thunderstore app will let you download this, and all other Content Warning mods in separate profiles.
+An app like [r2modman](https://thunderstore.io/c/content-warning/p/ebkr/r2modman/) or the [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) app will let you download this mod, along with all other Content Warning mods automatically, and split them into separate mod profiles.
 
 ### Manually
-Make sure you Have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch
+Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch
 
 ### Who needs to install?
 This mod must be installed for all players, not just the host. May still partially work if only the host has it installed, but that's:
 - Not (and will not be) tested
 - Will not work correctly
-- May stop working from any update.
+- May stop working from any update
 
 ## Contributing
 If you have a bug report, feature request, enhancement, etc, feel free to [submit an issue on the GitHub page!](https://github.com/gingerphoenix10/ContentPOVs/issues) Any support helps.<br>
