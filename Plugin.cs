@@ -6,16 +6,13 @@ using Zorro.Settings;
 using Zorro.Core.Serizalization;
 using System.Text;
 using UnityEngine.PlayerLoop;
-using UnityEngine.UI;
+using Unity.Collections;
 using System.Reflection;
 using Photon.Pun;
 using TMPro;
 using Zorro.Core;
 using Steamworks;
-// ExampleCWPlugin is mostly an example of how to use the modding API, not an actual serious mod.
-// It adds a setting to the Mods settings page, which is a slider from 0 to 100.
-// It then edits the Flashlight.Update method to prevent the battery of the flashlight
-// from falling below that setting value.
+using ExitGames.Client.Photon;
 
 namespace ContentPOVs;
 
@@ -32,13 +29,6 @@ public class POVCamera : ItemDataEntry
     {
         plrID = binaryDeserializer.ReadString(Encoding.UTF8);
     }
-
-    /*public string GetString()
-    {
-        int num = Mathf.CeilToInt(GetPercentage() * 100f);
-        string localizedString = LocalizationKeys.GetLocalizedString((Keys)127);
-        return $"{num}% {localizedString}";
-    }*/
 }
 
 
@@ -59,7 +49,6 @@ public class POVPlugin
     internal static bool host_scoreDivision = true;
     public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
     {
-        // If you know a better way of doing this, PLEASE tell me or PR it in. The new modding stuff has been out for less than a day, so I have no references lol
         public static List<Photon.Realtime.Player> awaitingCamera = new List<Photon.Realtime.Player>();
         private void Update()
         {
@@ -289,6 +278,10 @@ public class POVPlugin
                 LoadConfig();
             }
         }
+        public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+        {
+            LoadConfig();
+        }
     }
     static POVPlugin()
     {
@@ -300,7 +293,7 @@ public class POVPlugin
     internal static void UpdateConfig()
     {
         if (!PhotonNetwork.IsMasterClient) return;
-        ExitGames.Client.Photon.Hashtable settings = new();
+        Hashtable settings = new();
         settings.Add("ownerPickup", ownerPickup);
         settings.Add("ownerPickupBroken", ownerPickupBroken);
         settings.Add("colorable", colorable);
@@ -308,16 +301,20 @@ public class POVPlugin
         settings.Add("nameDisplay", nameDisplay);
         settings.Add("scoreDivision", scoreDivision);
         PhotonNetwork.CurrentRoom.SetCustomProperties(settings);
-        LoadConfig();
+    }
+    internal static bool tryLoadConfig(string optionName, bool fallback)
+    {
+        if (PhotonNetwork.CurrentRoom.CustomProperties[optionName] == null) return fallback;
+        else return (bool)PhotonNetwork.CurrentRoom.CustomProperties[optionName];
     }
     internal static void LoadConfig()
     {
-        host_ownerPickup = (bool)PhotonNetwork.CurrentRoom.CustomProperties["ownerPickup"];
-        host_ownerPickupBroken = (bool)PhotonNetwork.CurrentRoom.CustomProperties["ownerPickupBroken"];
-        host_colorable = (bool)PhotonNetwork.CurrentRoom.CustomProperties["colorable"];
-        host_nameable = (bool)PhotonNetwork.CurrentRoom.CustomProperties["nameable"];
-        host_nameDisplay = (bool)PhotonNetwork.CurrentRoom.CustomProperties["nameDisplay"];
-        host_scoreDivision = (bool)PhotonNetwork.CurrentRoom.CustomProperties["scoreDivision"];
+        host_ownerPickup = tryLoadConfig("ownerPickup", ownerPickup);
+        host_ownerPickupBroken = tryLoadConfig("ownerPickupBroken", ownerPickupBroken);
+        host_colorable = tryLoadConfig("colorable", colorable);
+        host_nameable = tryLoadConfig("nameable", nameable);
+        host_nameDisplay = tryLoadConfig("nameDisplay", nameDisplay);
+        host_scoreDivision = tryLoadConfig("scoreDivision", scoreDivision);
     }
     private static void SpawnCams()
     {
@@ -514,27 +511,6 @@ public class POVPlugin
 
     }
 }
-
-
-// Harmony patches are automatically applied by the vanilla modloader.
-// If 0Harmony.dll is already loaded by BepInEx, then BepInEx's harmony will be used instead.
-[HarmonyPatch(typeof(Flashlight))]
-[HarmonyPatch("Update")]
-public class Patch
-{
-    static AccessTools.FieldRef<Flashlight, BatteryEntry> batteryEntry =
-        AccessTools.FieldRefAccess<Flashlight, BatteryEntry>("m_batteryEntry");
-    //static ExampleSetting? exampleSetting;
-
-    static bool Prefix(Flashlight __instance)
-    {
-        //exampleSetting ??= GameHandler.Instance.SettingsHandler.GetSetting<ExampleSetting>();
-        //var bat = batteryEntry(__instance);
-        //bat.m_charge = Mathf.Max(bat.m_charge, bat.m_maxCharge * (exampleSetting.Value / 100));
-        return true;
-    }
-}
-
 
 [ContentWarningSetting]
 public class OnlyOwnerPickup : BoolSetting, IExposedSetting

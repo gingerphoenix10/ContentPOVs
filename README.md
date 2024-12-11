@@ -16,20 +16,10 @@ Capturing Everyone's POV one camera at a time
 - Display cameras' owner at the bottom right of each recording (toggleable)
 - Full [Virality](https://thunderstore.io/c/content-warning/p/MaxWasUnavailable/Virality/) support (4+ players, late joining)
 - Compatibility with most, if not all other Content Warning mods
-- Divides the amount of views you get by your player count, so the whole crew has to work together to reach quota
-
-## Dependencies
-- [![ShopUtils](https://img.shields.io/badge/ShopUtils-v1.0.8-blue?logo=thunderstore&style=for-the-badge)](https://thunderstore.io/c/content-warning/p/hyydsz/ShopUtils/)
-- [![ContentSettings](https://img.shields.io/badge/ContentSettings-v1.2.2-blue?logo=thunderstore&style=for-the-badge)](https://thunderstore.io/c/content-warning/p/CommanderCat101/ContentSettings)
-- [![MyceliumNetworking](https://img.shields.io/badge/MyceliumNetworking-v1.0.14-blue?logo=thunderstore&style=for-the-badge)](https://thunderstore.io/c/content-warning/p/RugbugRedfern/MyceliumNetworking/)
 
 ## Installation
 
-### Mod Manager (Recommended)
-An app like [r2modman](https://thunderstore.io/c/content-warning/p/ebkr/r2modman/) or the [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) app will let you download this mod, along with all other Content Warning mods automatically, and split them into separate mod profiles.
-
-### Manually
-Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch
+To install the mod, just subscribe to "ContentPOVs" on the Steam workshop. Everything should run normally aftewards!
 
 ### Who needs to install?
 This mod must be installed for all players, not just the host. May still partially work if only the host has it installed, but that's:
@@ -42,5 +32,5 @@ If you have a bug report, feature request, enhancement, etc, feel free to [submi
 If you have any programming knowledge and would like to help out with the project, feel free to fork the project and submit a pull request to help resolve issues, requests, etc.
 
 ## Credits
-gingerphoenix10 - 1% of the code<br>
-ChatGPT - 99% of the code
+gingerphoenix10 - 2.3% of the code<br>
+ChatGPT - 97.6% of the code
