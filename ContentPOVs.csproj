@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
-        <CWDir Condition=" '$(CWDir)' == '' ">D:\Steam\steamapps\common\Content Warning</CWDir>
+        <CWDir Condition=" '$(CWDir)' == '' ">C:\Program Files (x86)\Steam\steamapps\common\Content Warning</CWDir>
     </PropertyGroup>
 
     <ItemGroup>
