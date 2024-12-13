@@ -32,7 +32,7 @@ public class POVCamera : ItemDataEntry
 }
 
 
-[ContentWarningPlugin("ContentPOVs", "0.1", false)]
+[ContentWarningPlugin("ContentPOVs", "1.1.1", false)]
 public class POVPlugin
 {
     internal static bool ownerPickup = true;
@@ -509,6 +509,17 @@ public class POVPlugin
             return false;
         }
 
+    }
+
+    [HarmonyPatch(typeof(ExtractVideoMachine))]
+    internal static class ExtractorPatch
+    {
+        [HarmonyPostfix]
+        [HarmonyPatch("RPC_Failed")]
+        internal static void RPC_Failed(ExtractVideoMachine __instance)
+        {
+            __instance.StateMachine.SwitchState<ExtractMachineIdleState>();
+        }
     }
 }
 
