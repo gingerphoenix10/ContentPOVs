@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.1.1
+- Automatically reopens the extractor if a video fails to extractor
+- Add steam workshop shields to README
+
 ## 1.1.0
 - Added score division to balance out gameplay with more cameras
 - Updated README

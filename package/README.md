@@ -5,6 +5,13 @@
 [![Thunderstore Downloads](https://img.shields.io/thunderstore/dt/gingerphoenix10/ContentPOVs?style=for-the-badge&logo=thunderstore&logoColor=white)](https://thunderstore.io/c/content-warning/p/gingerphoenix10/ContentPOVs)
 [![Build](https://img.shields.io/github/actions/workflow/status/gingerphoenix10/ContentPOVs/build.yml?style=for-the-badge&logo=github&branch=main)](https://github.com/gingerphoenix10/ContentPOVs/actions/workflows/build.yml)
 
+[![Steam Downloads](https://img.shields.io/steam/downloads/3382770586?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586)
+[![Steam Subscriptions](https://img.shields.io/steam/subscriptions/3382770586?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586)
+[![Steam Views](https://img.shields.io/steam/views/3382770586?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586)
+[![Steam Favorites](https://img.shields.io/steam/favorites/3382770586?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586)
+[![Steam Updated](https://img.shields.io/steam/update-date/3382770586?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586)
+[![Steam Size](https://img.shields.io/steam/size/3382770586?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586)
+
 [![Discord](https://img.shields.io/discord/1166129414547980459?logo=discord&logoColor=white&label=discord&color=3b6cff&style=for-the-badge)](https://discord.gg/TZ8qW4HRsG)
 
 Capturing Everyone's POV one camera at a time
