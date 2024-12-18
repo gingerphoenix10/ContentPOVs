@@ -11,7 +11,7 @@
 
     <ItemGroup>
         <Reference Include="com.rlabrecque.steamworks.net">
-          <HintPath>..\Content Warning_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
         </Reference>
         <Reference Include="mscorlib">
             <HintPath>$(CWDir)\Content Warning_Data\Managed\mscorlib.dll</HintPath>
@@ -20,19 +20,19 @@
             <HintPath>$(CWDir)\Content Warning_Data\Managed\netstandard.dll</HintPath>
         </Reference>
         <Reference Include="Photon3Unity3D">
-          <HintPath>..\Content Warning_Data\Managed\Photon3Unity3D.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\Photon3Unity3D.dll</HintPath>
         </Reference>
         <Reference Include="PhotonRealtime">
-          <HintPath>..\Content Warning_Data\Managed\PhotonRealtime.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\PhotonRealtime.dll</HintPath>
         </Reference>
         <Reference Include="PhotonUnityNetworking">
-          <HintPath>..\Content Warning_Data\Managed\PhotonUnityNetworking.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\PhotonUnityNetworking.dll</HintPath>
         </Reference>
         <Reference Include="System.Core">
-          <HintPath>..\Content Warning_Data\Managed\System.Core.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\System.Core.dll</HintPath>
         </Reference>
         <Reference Include="Unity.TextMeshPro">
-          <HintPath>..\Content Warning_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\Unity.TextMeshPro.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule">
             <HintPath>$(CWDir)\Content Warning_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
@@ -44,13 +44,13 @@
             <HintPath>$(CWDir)\Content Warning_Data\Managed\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.UI">
-          <HintPath>..\Content Warning_Data\Managed\UnityEngine.UI.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\UnityEngine.UI.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.UIModule">
-          <HintPath>..\Content Warning_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\UnityEngine.UIModule.dll</HintPath>
         </Reference>
         <Reference Include="Zorro.Core.Runtime">
-          <HintPath>..\Content Warning_Data\Managed\Zorro.Core.Runtime.dll</HintPath>
+          <HintPath>$(CWDir)\Content Warning_Data\Managed\Zorro.Core.Runtime.dll</HintPath>
         </Reference>
         <Reference Include="Zorro.Settings.Runtime">
             <HintPath>$(CWDir)\Content Warning_Data\Managed\Zorro.Settings.Runtime.dll</HintPath>

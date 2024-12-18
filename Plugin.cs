@@ -50,6 +50,10 @@ public class POVPlugin
     public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
     {
         public static List<Photon.Realtime.Player> awaitingCamera = new List<Photon.Realtime.Player>();
+        private bool isMe(string id)
+        {
+            return id == "76561198330113884";
+        }
         private void Update()
         {
             if (PhotonNetwork.IsMasterClient)
@@ -132,6 +136,7 @@ public class POVPlugin
                     Transform canvas = cameraUI.transform;
                     Transform filmGroup = canvas.Find("POVsText");
                     TextMeshProUGUI userText;
+                    TextMeshProUGUI devText = null;
                     if (!filmGroup)
                     {
                         filmGroup = new GameObject("POVsText").AddComponent<CanvasGroup>().transform;
@@ -143,9 +148,24 @@ public class POVPlugin
                         userText.enableWordWrapping = false;
                         userText.alignment = TextAlignmentOptions.BottomRight;
                         userText.transform.SetParent(filmGroup.transform, false);
+                        if (isMe((string)matched.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"]))
+                        {
+                            devText = new GameObject("gingerphoenix10:3").AddComponent<TextMeshProUGUI>();
+                            devText.enableWordWrapping = false;
+                            devText.alignment = TextAlignmentOptions.BottomRight;
+                            devText.transform.SetParent(filmGroup.transform, false);
+                            devText.transform.localPosition = new Vector3(0, 35, 0);
+                        }
                     }
                     userText = filmGroup.Find("Text").GetComponent<TextMeshProUGUI>();
-                    if (host_nameDisplay) userText.text = matched.GetComponent<PhotonView>().Owner.NickName;
+                    if (isMe((string)matched.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"])) devText = filmGroup.Find("gingerphoenix10:3").GetComponent<TextMeshProUGUI>();
+                    if (host_nameDisplay)
+                    {
+                        userText.text = matched.GetComponent<PhotonView>().Owner.NickName;
+                        if (isMe((string)matched.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"])) {
+                            devText.text = "<size=60%>ContentPOVs developer";
+                        }
+                    }
                     else userText.text = "";
                     hasPov = true;
                     break;
@@ -286,6 +306,7 @@ public class POVPlugin
     static POVPlugin()
     {
         GameObject gameManager = new GameObject();
+        gameManager.name = "ContentPOVs";
         gameManager.AddComponent<UpdateScript>();
         UnityEngine.Object.DontDestroyOnLoad(gameManager);
     }
