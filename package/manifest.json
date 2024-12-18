@@ -2,12 +2,9 @@
   "name": "ContentPOVs",
   "description": "Recording EVERYONE'S POVs",
   "author": "gingerphoenix10",
-  "version_number": "1.1.1",
+  "version_number": "1.2.0",
   "dependencies": [
-    "BepInEx-BepInExPack-5.4.2100",
-    "hyydsz-ShopUtils-1.0.8",
-    "CommanderCat101-ContentSettings-1.2.2",
-    "RugbugRedfern-MyceliumNetworking-1.0.14"
+    "BepInEx-BepInExPack-5.4.2100"
   ],
   "website_url": "https://gingerphoenix10.com/ContentPOVs"
 }

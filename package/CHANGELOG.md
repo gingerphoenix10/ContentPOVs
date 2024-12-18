@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.0
+- Reworked to support the latest version of Content Warning (just make sure you don't have both Thunderstore and Workshop versions installed
+- Updated README
+
 ## 1.1.1
 - Automatically reopens the extractor if a video fails to extractor
 - Add steam workshop shields to README

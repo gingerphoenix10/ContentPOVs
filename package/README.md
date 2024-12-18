@@ -25,18 +25,15 @@ Capturing Everyone's POV one camera at a time
 - Compatibility with most, if not all other Content Warning mods
 - Divides the amount of views you get by your player count, so the whole crew has to work together to reach quota
 
-## Dependencies
-- [![ShopUtils](https://img.shields.io/badge/ShopUtils-v1.0.8-blue?logo=thunderstore&style=for-the-badge)](https://thunderstore.io/c/content-warning/p/hyydsz/ShopUtils/)
-- [![ContentSettings](https://img.shields.io/badge/ContentSettings-v1.2.2-blue?logo=thunderstore&style=for-the-badge)](https://thunderstore.io/c/content-warning/p/CommanderCat101/ContentSettings)
-- [![MyceliumNetworking](https://img.shields.io/badge/MyceliumNetworking-v1.0.14-blue?logo=thunderstore&style=for-the-badge)](https://thunderstore.io/c/content-warning/p/RugbugRedfern/MyceliumNetworking/)
-
 ## Installation
 
 ### Mod Manager (Recommended)
 An app like [r2modman](https://thunderstore.io/c/content-warning/p/ebkr/r2modman/) or the [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) app will let you download this mod, along with all other Content Warning mods automatically, and split them into separate mod profiles.
+If you've downgraded to the previous version for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v.1.0.14, as those are verified to work.
 
 ### Manually
 Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch
+If you've downgraded to the previous version for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v.1.0.14, as those are verified to work.
 
 ### Who needs to install?
 This mod must be installed for all players, not just the host. May still partially work if only the host has it installed, but that's:
