@@ -26,18 +26,6 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="CommanderCat101.ContentSettings">
-      <HintPath>.\libs\CommanderCat101.ContentSettings.dll</HintPath>
-    </Reference>
-    <Reference Include="MyceliumNetworkingForCW">
-      <HintPath>.\libs\MyceliumNetworkingForCW.dll</HintPath>
-    </Reference>
-    <Reference Include="ShopUtils">
-      <HintPath>.\libs\ShopUtils.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
   <ItemGroup Condition="$(CI) != 'true'">
     <Reference Include="com.rlabrecque.steamworks.net">
       <HintPath>$(ContentWarningPath)Content Warning_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>

@@ -11,12 +11,10 @@ using Steamworks;
 using TMPro;
 using Zorro.Core.Serizalization;
 using System.Text;
-using ShopUtils;
 using System.Reflection;
-using ContentSettings.API.Settings;
-using ContentSettings.API.Attributes;
-using MyceliumNetworking;
 using Zorro.Core;
+using Zorro.Settings;
+using ExitGames.Client.Photon;
 
 namespace ContentPOVs;
 
@@ -35,8 +33,8 @@ public class POVCamera : ItemDataEntry
     }
 }
 
-[SettingRegister("ContentPOVs")]
-public class OnlyOwnerPickup : BoolSetting, ICustomSetting
+[ContentWarningSetting]
+public class OnlyOwnerPickup : BoolSetting, IExposedSetting
 {
     public override void ApplyValue()
     {
@@ -47,10 +45,11 @@ public class OnlyOwnerPickup : BoolSetting, ICustomSetting
     public string GetDisplayName() => "Only owner can pickup camera";
 
     protected override bool GetDefaultValue() => true;
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
 }
 
-[SettingRegister("ContentPOVs")]
-public class OnlyOwnerPickupBroken : BoolSetting, ICustomSetting
+[ContentWarningSetting]
+public class OnlyOwnerPickupBroken : BoolSetting, IExposedSetting
 {
     public override void ApplyValue()
     {
@@ -61,9 +60,10 @@ public class OnlyOwnerPickupBroken : BoolSetting, ICustomSetting
     public string GetDisplayName() => "Only owner can pickup broken camera";
 
     protected override bool GetDefaultValue() => false;
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
 }
-[SettingRegister("ContentPOVs")]
-public class CameraColorable : BoolSetting, ICustomSetting
+[ContentWarningSetting]
+public class CameraColorable : BoolSetting, IExposedSetting
 {
     public override void ApplyValue()
     {
@@ -74,10 +74,11 @@ public class CameraColorable : BoolSetting, ICustomSetting
     public string GetDisplayName() => "Match camera color to player's visor color";
 
     protected override bool GetDefaultValue() => true;
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
 }
 
-[SettingRegister("ContentPOVs")]
-public class CameraNameable : BoolSetting, ICustomSetting
+[ContentWarningSetting]
+public class CameraNameable : BoolSetting, IExposedSetting
 {
     public override void ApplyValue()
     {
@@ -88,10 +89,11 @@ public class CameraNameable : BoolSetting, ICustomSetting
     public string GetDisplayName() => "Show user's name while hovering over camera";
 
     protected override bool GetDefaultValue() => true;
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
 }
 
-[SettingRegister("ContentPOVs")]
-public class CameraNameDisplay : BoolSetting, ICustomSetting
+[ContentWarningSetting]
+public class CameraNameDisplay : BoolSetting, IExposedSetting
 {
     public override void ApplyValue()
     {
@@ -102,10 +104,11 @@ public class CameraNameDisplay : BoolSetting, ICustomSetting
     public string GetDisplayName() => "Display the camera's owner at the bottom right of recordings";
 
     protected override bool GetDefaultValue() => true;
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
 }
 
-[SettingRegister("ContentPOVs")]
-public class DivideScore : BoolSetting, ICustomSetting
+[ContentWarningSetting]
+public class DivideScore : BoolSetting, IExposedSetting
 {
     public override void ApplyValue()
     {
@@ -116,13 +119,11 @@ public class DivideScore : BoolSetting, ICustomSetting
     public string GetDisplayName() => "Divide the score you get by the amount of players in the lobby to balance out gameplay";
 
     protected override bool GetDefaultValue() => true;
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
 }
 
 [ContentWarningPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, true)]
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
-[BepInDependency("hyydsz-ShopUtils")]
-[BepInDependency("RugbugRedfern.MyceliumNetworking")]
-//[BepInDependency("RedstoneWizard08.ConfigurableWarning")]
 public class POVPlugin : BaseUnityPlugin
 {
     internal static new ManualLogSource Logger;
@@ -142,190 +143,248 @@ public class POVPlugin : BaseUnityPlugin
     internal static bool host_scoreDivision = true;
     internal static void UpdateConfig()
     {
-        if (!MyceliumNetwork.IsHost) return;
-        MyceliumNetwork.SetLobbyData("ownerPickup", ownerPickup);
-        MyceliumNetwork.SetLobbyData("ownerPickupBroken", ownerPickupBroken);
-        MyceliumNetwork.SetLobbyData("colorable", colorable);
-        MyceliumNetwork.SetLobbyData("nameable", nameable);
-        MyceliumNetwork.SetLobbyData("nameDisplay", nameDisplay);
-        MyceliumNetwork.SetLobbyData("scoreDivision", scoreDivision);
-        LoadConfig();
+        if (!PhotonNetwork.IsMasterClient) return;
+        Hashtable settings = new();
+        settings.Add("ownerPickup", ownerPickup);
+        settings.Add("ownerPickupBroken", ownerPickupBroken);
+        settings.Add("colorable", colorable);
+        settings.Add("nameable", nameable);
+        settings.Add("nameDisplay", nameDisplay);
+        settings.Add("scoreDivision", scoreDivision);
+        PhotonNetwork.CurrentRoom.SetCustomProperties(settings);
+    }
+    internal static bool tryLoadConfig(string optionName, bool fallback)
+    {
+        if (PhotonNetwork.CurrentRoom.CustomProperties[optionName] == null) return fallback;
+        else return (bool)PhotonNetwork.CurrentRoom.CustomProperties[optionName];
     }
     internal static void LoadConfig()
     {
-        host_ownerPickup = MyceliumNetwork.GetLobbyData<bool>("ownerPickup");
-        host_ownerPickupBroken = MyceliumNetwork.GetLobbyData<bool>("ownerPickupBroken");
-        host_colorable = MyceliumNetwork.GetLobbyData<bool>("colorable");
-        host_nameable = MyceliumNetwork.GetLobbyData<bool>("nameable");
-        host_nameDisplay = MyceliumNetwork.GetLobbyData<bool>("nameDisplay");
-        host_scoreDivision = MyceliumNetwork.GetLobbyData<bool>("scoreDivision");
+        host_ownerPickup = tryLoadConfig("ownerPickup", ownerPickup);
+        host_ownerPickupBroken = tryLoadConfig("ownerPickupBroken", ownerPickupBroken);
+        host_colorable = tryLoadConfig("colorable", colorable);
+        host_nameable = tryLoadConfig("nameable", nameable);
+        host_nameDisplay = tryLoadConfig("nameDisplay", nameDisplay);
+        host_scoreDivision = tryLoadConfig("scoreDivision", scoreDivision);
     }
     private void Awake()
     {
         Logger = base.Logger;
         Patcher.PatchAll();
-        Entries.RegisterEntry(typeof(POVCamera));
-        MyceliumNetwork.RegisterLobbyDataKey("ownerPickup");
-        MyceliumNetwork.RegisterLobbyDataKey("ownerPickupBroken");
-        MyceliumNetwork.RegisterLobbyDataKey("colorable");
-        MyceliumNetwork.RegisterLobbyDataKey("nameable");
-        MyceliumNetwork.RegisterLobbyDataKey("nameDisplay");
-        MyceliumNetwork.RegisterLobbyDataKey("scoreDivision");
-        MyceliumNetwork.LobbyEntered += delegate
-        {
-            if (MyceliumNetwork.IsHost)
-            {
-                UpdateConfig();
-            }
-            else
-            {
-                LoadConfig();
-            }
-        };
-        MyceliumNetwork.LobbyDataUpdated += delegate
-        {
-            if (!MyceliumNetwork.IsHost) LoadConfig();
-        };
     }
-    private void Update()
+    class UpdateScript : MonoBehaviour
     {
-        if (MyceliumNetwork.IsHost)
+        private bool isMe(string id)
         {
-            for (int i = awaitingCamera.Count - 1; i >= 0; i--)
-            {
-                Photon.Realtime.Player player = awaitingCamera[i];
-                Logger.LogInfo("Attempting to summon a camera for " + player.NickName);
-                if (player.CustomProperties["SteamID"] == null) continue;
-                Pickup cam = PickupHandler.CreatePickup((byte)1, new ItemInstanceData(Guid.NewGuid()), new Vector3(-14.805f - (i * 0.487f), 2.418f, 8.896f - (i * 0.487f)), Quaternion.Euler(0f, 315f, 0f));
-                ItemInstance itemInstance = cam.itemInstance;
-
-                POVCamera camera = new POVCamera();
-                camera.plrID = player.CustomProperties["SteamID"] as string;
-                itemInstance.instanceData.m_dataEntries.Add(camera);
-                awaitingCamera.RemoveAt(i);
-            }
+            return id == "76561198330113884";
         }
-        foreach (VideoCamera cam in UnityEngine.Object.FindObjectsOfType<VideoCamera>()) {
-            bool hasPov = false;
-            HashSet<ItemDataEntry> entries = cam.GetComponent<ItemInstance>().instanceData.m_dataEntries;
-            foreach (ItemDataEntry entry in entries)
+        private void Update()
+        {
+            if (PhotonNetwork.IsMasterClient)
             {
-                if (entry is not POVCamera povCamera) continue;
-                if (povCamera.plrID == "-1")
+                for (int i = awaitingCamera.Count - 1; i >= 0; i--)
                 {
+                    Photon.Realtime.Player player = awaitingCamera[i];
+                    Logger.LogInfo("Attempting to summon a camera for " + player.NickName);
+                    if (player.CustomProperties["SteamID"] == null) continue;
+                    Pickup cam = PickupHandler.CreatePickup((byte)1, new ItemInstanceData(Guid.NewGuid()), new Vector3(-14.805f - (i * 0.487f), 2.418f, 8.896f - (i * 0.487f)), Quaternion.Euler(0f, 315f, 0f));
+                    ItemInstance itemInstance = cam.itemInstance;
+
+                    POVCamera camera = new POVCamera();
+                    camera.plrID = player.CustomProperties["SteamID"] as string;
+                    itemInstance.instanceData.m_dataEntries.Add(camera);
+                    awaitingCamera.RemoveAt(i);
+                }
+            }
+            foreach (VideoCamera cam in UnityEngine.Object.FindObjectsOfType<VideoCamera>())
+            {
+                bool hasPov = false;
+                HashSet<ItemDataEntry> entries = cam.GetComponent<ItemInstance>().instanceData.m_dataEntries;
+                foreach (ItemDataEntry entry in entries)
+                {
+                    if (entry is not POVCamera povCamera) continue;
+                    if (povCamera.plrID == "-1")
+                    {
+                        hasPov = true;
+                        break;
+                    }
+                    Player matched = new();
+                    foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsOfType<PlayerVisor>())
+                    {
+                        Player plr = vis.gameObject.GetComponent<Player>();
+                        if (plr.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"] as string == povCamera.plrID)
+                        {
+                            matched = plr;
+                            break;
+                        }
+                    }
+
+                    if (!matched)
+                    {
+                        Logger.LogInfo("Could not find a matching player. Assuming disconnect.");
+                        Destroy(cam.gameObject);
+                        break;
+                    }
+                    if (host_colorable)
+                    {
+                        Transform objects = cam.transform.Find("VideoCam");
+                        Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                        cubeRenderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
+                        cubeRenderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
+
+                        Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
+                        cube2Renderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
+                        cube2Renderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
+                    }
+                    else
+                    {
+                        Transform objects = cam.transform.Find("VideoCam");
+                        Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                        cubeRenderer.materials[0].color = Color.black;
+                        cubeRenderer.materials[1].color = Color.black;
+
+                        Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
+                        cube2Renderer.materials[0].color = Color.black;
+                        cube2Renderer.materials[1].color = Color.black;
+                    }
+
+                    if (cam.transform.parent && cam.transform.parent.GetComponent<Pickup>() != null && host_nameable)
+                    {
+                        cam.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Camera";
+                    }
+                    else if (cam.transform.parent && cam.transform.parent.GetComponent<Pickup>() != null)
+                    {
+                        cam.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Camera";
+                    }
+                    Canvas cameraUI = (Canvas)typeof(VideoCamera).GetField("m_cameraUI", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(cam);
+                    Transform canvas = cameraUI.transform;
+                    Transform filmGroup = canvas.Find("POVsText");
+                    TextMeshProUGUI userText;
+                    TextMeshProUGUI devText = null;
+                    if (!filmGroup)
+                    {
+                        filmGroup = new GameObject("POVsText").AddComponent<CanvasGroup>().transform;
+                        filmGroup.SetParent(canvas, false);
+                        filmGroup.localPosition = new Vector3(250, -400, 0);
+                        filmGroup.localScale = Vector3.one * 1.5f;
+
+                        userText = new GameObject("Text").AddComponent<TextMeshProUGUI>();
+                        userText.enableWordWrapping = false;
+                        userText.alignment = TextAlignmentOptions.BottomRight;
+                        userText.transform.SetParent(filmGroup.transform, false);
+                        if (isMe((string)matched.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"]))
+                        {
+                            devText = new GameObject("gingerphoenix10:3").AddComponent<TextMeshProUGUI>();
+                            devText.enableWordWrapping = false;
+                            devText.alignment = TextAlignmentOptions.BottomRight;
+                            devText.transform.SetParent(filmGroup.transform, false);
+                            devText.transform.localPosition = new Vector3(0, 35, 0);
+                        }
+                    }
+                    userText = filmGroup.Find("Text").GetComponent<TextMeshProUGUI>();
+                    if (isMe((string)matched.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"])) devText = filmGroup.Find("gingerphoenix10:3").GetComponent<TextMeshProUGUI>();
+                    if (host_nameDisplay)
+                    {
+                        userText.text = matched.GetComponent<PhotonView>().Owner.NickName;
+                        if (isMe((string)matched.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"]))
+                        {
+                            devText.text = "<size=60%>ContentPOVs developer";
+                        }
+                    }
+                    else userText.text = "";
                     hasPov = true;
                     break;
                 }
-                Player matched = new();
-                foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsOfType<PlayerVisor>())
+                if (!hasPov)
                 {
-                    Player plr = vis.gameObject.GetComponent<Player>();
-                    if (plr.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"] as string == povCamera.plrID)
+                    POVCamera globalCamera = new();
+                    globalCamera.plrID = "-1";
+                    cam.GetComponent<ItemInstance>().instanceData.m_dataEntries.Add(globalCamera);
+                }
+            }
+            foreach (ItemInstance item in UnityEngine.Object.FindObjectsOfType<ItemInstance>())
+            {
+                if (item.item.id != 2) continue;
+                string hasPov = "-2";
+                HashSet<ItemDataEntry> entries = item.instanceData.m_dataEntries;
+                foreach (ItemDataEntry entry in entries)
+                {
+                    if (entry is not POVCamera povCamera) continue;
+                    if (povCamera.plrID == "-1")
                     {
-                        matched = plr;
+                        hasPov = "-1";
                         break;
                     }
-                }
+                    Player matched = new();
+                    foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsOfType<PlayerVisor>())
+                    {
+                        Player plr = vis.gameObject.GetComponent<Player>();
+                        if (plr.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"] as string == povCamera.plrID)
+                        {
+                            matched = plr;
+                            break;
+                        }
+                    }
 
-                if (!matched)
-                {
-                    Logger.LogInfo("Could not find a matching player. Assuming disconnect.");
-                    Destroy(cam.gameObject);
+                    Transform objects = item.gameObject.transform.Find("VideoCam");
+                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
+                    hasPov = povCamera.plrID;
+                    if (!matched)
+                    {
+                        hasPov = "-2";
+                        cubeRenderer.materials[0].color = Color.black;
+                        cubeRenderer.materials[1].color = Color.black;
+                        if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
+                        {
+                            item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
+                        }
+                        else
+                        {
+                            item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
+                        }
+                        break;
+                    }
+
+                    if (host_colorable)
+                    {
+                        cubeRenderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
+                        cubeRenderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
+
+                        cube2Renderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
+                        cube2Renderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
+                    }
+                    else
+                    {
+                        cubeRenderer.materials[0].color = Color.black;
+                        cubeRenderer.materials[1].color = Color.black;
+
+                        cube2Renderer.materials[0].color = Color.black;
+                        cube2Renderer.materials[1].color = Color.black;
+                    }
+
+                    if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
+                    {
+                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Broken Camera";
+                    }
+                    else
+                    {
+                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
+                    }
                     break;
                 }
-                if (host_colorable)
+                if (hasPov == "-2")
                 {
-                    Transform objects = cam.transform.Find("VideoCam");
-                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
-                    cubeRenderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
-                    cubeRenderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
 
-                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
-                    cube2Renderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
-                    cube2Renderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
-                }
-                else
-                {
-                    Transform objects = cam.transform.Find("VideoCam");
+                    Transform objects = item.gameObject.transform.Find("VideoCam");
                     Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
                     cubeRenderer.materials[0].color = Color.black;
                     cubeRenderer.materials[1].color = Color.black;
 
-                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
                     cube2Renderer.materials[0].color = Color.black;
                     cube2Renderer.materials[1].color = Color.black;
-                }
 
-                if (cam.transform.parent && cam.transform.parent.GetComponent<Pickup>() != null && host_nameable)
-                {
-                    cam.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Camera";
-                }
-                else if (cam.transform.parent && cam.transform.parent.GetComponent<Pickup>() != null)
-                {
-                    cam.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Camera";
-                }
-                Canvas cameraUI = (Canvas)typeof(VideoCamera).GetField("m_cameraUI", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(cam);
-                Transform canvas = cameraUI.transform;
-                Transform filmGroup = canvas.Find("POVsText");
-                TextMeshProUGUI userText;
-                if (!filmGroup)
-                {
-                    filmGroup = new GameObject("POVsText").AddComponent<CanvasGroup>().transform;
-                    filmGroup.SetParent(canvas, false);
-                    filmGroup.localPosition = new Vector3(250, -400, 0);
-                    filmGroup.localScale = Vector3.one * 1.5f;
-
-                    userText = new GameObject("Text").AddComponent<TextMeshProUGUI>();
-                    userText.enableWordWrapping = false;
-                    userText.alignment = TextAlignmentOptions.BottomRight;
-                    userText.transform.SetParent(filmGroup.transform, false);
-                }
-                userText = filmGroup.Find("Text").GetComponent<TextMeshProUGUI>();
-                if (host_nameDisplay) userText.text = matched.GetComponent<PhotonView>().Owner.NickName;
-                else userText.text = "";
-                hasPov = true;
-                break;
-            }
-            if (!hasPov)
-            {
-                POVCamera globalCamera = new();
-                globalCamera.plrID = "-1";
-                cam.GetComponent<ItemInstance>().instanceData.m_dataEntries.Add(globalCamera);
-            }
-        }
-        foreach (ItemInstance item in UnityEngine.Object.FindObjectsOfType<ItemInstance>())
-        {
-            if (item.item.id != 2) continue;
-            string hasPov = "-2";
-            HashSet<ItemDataEntry> entries = item.instanceData.m_dataEntries;
-            foreach (ItemDataEntry entry in entries)
-            {
-                if (entry is not POVCamera povCamera) continue;
-                if (povCamera.plrID == "-1")
-                {
-                    hasPov = "-1";
-                    break;
-                }
-                Player matched = new();
-                foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsOfType<PlayerVisor>())
-                {
-                    Player plr = vis.gameObject.GetComponent<Player>();
-                    if (plr.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"] as string == povCamera.plrID)
-                    {
-                        matched = plr;
-                        break;
-                    }
-                }
-
-                Transform objects = item.gameObject.transform.Find("VideoCam");
-                Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
-                Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
-                hasPov = povCamera.plrID;
-                if (!matched)
-                {
-                    hasPov = "-2";
-                    cubeRenderer.materials[0].color = Color.black;
-                    cubeRenderer.materials[1].color = Color.black;
                     if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
                     {
                         item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
@@ -334,70 +393,22 @@ public class POVPlugin : BaseUnityPlugin
                     {
                         item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
                     }
-                    break;
                 }
-
-                if (host_colorable)
+                else if (hasPov == "-1")
                 {
-                    cubeRenderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
-                    cubeRenderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
-
-                    cube2Renderer.materials[0].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
-                    cube2Renderer.materials[1].color = matched.GetComponent<PlayerVisor>().visorColor.Value;
-                }
-                else
-                {
+                    Transform objects = item.gameObject.transform.Find("VideoCam");
+                    Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
+                    Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
                     cubeRenderer.materials[0].color = Color.black;
                     cubeRenderer.materials[1].color = Color.black;
 
                     cube2Renderer.materials[0].color = Color.black;
                     cube2Renderer.materials[1].color = Color.black;
-                }
 
-                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
-                {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Broken Camera";
-                }
-                else
-                {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
-                }
-                break;
-            }
-            if (hasPov == "-2")
-            {
-
-                Transform objects = item.gameObject.transform.Find("VideoCam");
-                Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
-                Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
-                cubeRenderer.materials[0].color = Color.black;
-                cubeRenderer.materials[1].color = Color.black;
-
-                cube2Renderer.materials[0].color = Color.black;
-                cube2Renderer.materials[1].color = Color.black;
-
-                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
-                {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
-                }
-                else
-                {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
-                }
-            } else if (hasPov == "-1")
-            {
-                Transform objects = item.gameObject.transform.Find("VideoCam");
-                Renderer cubeRenderer = objects.Find("Cube").GetComponent<Renderer>();
-                Renderer cube2Renderer = objects.Find("Cube.001").GetComponent<Renderer>();
-                cubeRenderer.materials[0].color = Color.black;
-                cubeRenderer.materials[1].color = Color.black;
-
-                cube2Renderer.materials[0].color = Color.black;
-                cube2Renderer.materials[1].color = Color.black;
-
-                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
-                {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
+                    if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && host_nameable)
+                    {
+                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
+                    }
                 }
             }
         }
@@ -407,6 +418,7 @@ public class POVPlugin : BaseUnityPlugin
         for (int i = 0; i < UnityEngine.Object.FindObjectsOfType<Player>().Length + 0; i++)
         {
             awaitingCamera.Add(UnityEngine.Object.FindObjectsOfType<Player>()[i].GetComponent<PhotonView>().Owner);
+            Logger.LogInfo("Spawning camera for player");
         }
     }
     internal static Harmony Harmony { get; private set; }
@@ -418,7 +430,7 @@ public class POVPlugin : BaseUnityPlugin
         [HarmonyPatch("RPCM_StartGame")]
         internal static void SpawnOnStartRun()
         {
-            if (MyceliumNetwork.IsHost && PhotonNetwork.InRoom)
+            if (PhotonNetwork.IsMasterClient && PhotonNetwork.InRoom)
             {
                 Logger.LogInfo("Called SpawnOnStartRun");
                 SpawnCams();
@@ -429,7 +441,7 @@ public class POVPlugin : BaseUnityPlugin
         [HarmonyPatch("OnSlept")]
         internal static void SpawnOnNewDay()
         {
-            if (MyceliumNetwork.IsHost)
+            if (PhotonNetwork.IsMasterClient)
             {
                 Logger.LogInfo("Called SpawnOnNewDay");
                 SpawnCams();
@@ -465,6 +477,25 @@ public class POVPlugin : BaseUnityPlugin
             typeof(SurfaceNetworkHandler).GetField("m_HeadingToUnderWorld", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(__instance, true);
             __result = true;
             return false;
+        }
+        [HarmonyPrefix]
+        [HarmonyPatch("OnJoinedRoom")]
+        internal static void OnJoinedRoom()
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                UpdateConfig();
+            }
+            else
+            {
+                LoadConfig();
+            }
+        }
+        [HarmonyPrefix]
+        [HarmonyPatch("OnRoomPropertiesUpdate")]
+        internal static void OnRoomPropertiesUpdate()
+        {
+            LoadConfig();
         }
     }
 
@@ -562,7 +593,7 @@ public class POVPlugin : BaseUnityPlugin
         internal static bool GetScore(ContentEventFrame __instance, ref float __result)
         {
             if (!host_scoreDivision) return true;
-            __result = SingletonAsset<BigNumbers>.Instance.percentageToScreenToFactorCurve.Evaluate(__instance.seenAmount) * __instance.contentEvent.GetContentValue() / MyceliumNetwork.PlayerCount;
+            __result = SingletonAsset<BigNumbers>.Instance.percentageToScreenToFactorCurve.Evaluate(__instance.seenAmount) * __instance.contentEvent.GetContentValue() / PhotonNetwork.CurrentRoom.PlayerCount;
             return false;
         }
 
@@ -576,6 +607,46 @@ public class POVPlugin : BaseUnityPlugin
         internal static void RPC_Failed(ExtractVideoMachine __instance)
         {
             __instance.StateMachine.SwitchState<ExtractMachineIdleState>();
+        }
+    }
+
+    [HarmonyPatch(typeof(ItemInstanceData))]
+    public class ItemDataPatches
+    {
+        [HarmonyPrefix]
+        [HarmonyPatch("GetEntryIdentifier")]
+        static bool GetEntryIdentifier(ref byte __result, Type type)
+        {
+            if (type == typeof(ContentPOVs.POVCamera))
+            {
+                __result = 11;
+                return false;
+            }
+            return true;
+        }
+        [HarmonyPrefix]
+        [HarmonyPatch("GetEntryType")]
+        static bool GetEntryType(ref ItemDataEntry __result, byte identifier)
+        {
+            if (identifier == 11)
+            {
+                __result = new ContentPOVs.POVCamera();
+                return false;
+            }
+            return true;
+        }
+    }
+    [HarmonyPatch(typeof(PhotonHandler))]
+    public class StartupPatch
+    {
+        [HarmonyPostfix]
+        [HarmonyPatch("Awake")]
+        static void Awake()
+        {
+            GameObject updateScript = new GameObject();
+            updateScript.name = "ContentPOVs";
+            updateScript.AddComponent<UpdateScript>();
+            UnityEngine.Object.DontDestroyOnLoad(updateScript);
         }
     }
 }
