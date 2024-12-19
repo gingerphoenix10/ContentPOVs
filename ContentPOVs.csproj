@@ -9,7 +9,7 @@
         <CWDir Condition=" '$(CWDir)' == '' ">C:\Program Files (x86)\Steam\steamapps\common\Content Warning</CWDir>
     </PropertyGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="$(CI) != 'true'">
         <Reference Include="com.rlabrecque.steamworks.net">
           <HintPath>$(CWDir)\Content Warning_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
         </Reference>
@@ -59,7 +59,9 @@
             <HintPath>$(CWDir)\Content Warning_Data\Managed\0Harmony.dll</HintPath>
         </Reference>
     </ItemGroup>
-
+    <ItemGroup Condition="$(CI) == 'true'">
+        <PackageReference Include="MaxWasUnavailable.ContentWarning.Libs" Version="*-*" PrivateAssets="all" />
+    </ItemGroup>
     <Target Name="CopyOutputFileToGame" AfterTargets="Build">
         <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll;preview.png" DestinationFolder="$(CWDir)\Plugins\ContentPOVs" />
     </Target>
