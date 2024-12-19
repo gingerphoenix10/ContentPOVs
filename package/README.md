@@ -28,13 +28,18 @@ Capturing Everyone's POV one camera at a time
 
 ## Installation
 
-### Mod Manager (Recommended)
+### Steam Workshop (Recommended)
+ContentPOVs is available on the offical Content Warning Steam Workshop. Just click on the [Workshop item](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586&tscn=1734505955), then subscibe to the mod. It should automatically load in-game after that.
+
+
+
+### Mod Manager (Thunderstore)
 An app like [r2modman](https://thunderstore.io/c/content-warning/p/ebkr/r2modman/) or the [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) app will let you download this mod, along with all other Content Warning mods automatically, and split them into separate mod profiles.<br>
-If you've downgraded to the previous version for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v.1.0.14, as those are verified to work.
+If you've downgraded to a previous version of Content Warning for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v1.0.14, as those are verified to work.
 
 ### Manually
 Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch.<br>
-If you've downgraded to the previous version for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v.1.0.14, as those are verified to work.
+If you've downgraded to a previous version of Content Warning for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v1.0.14, as those are verified to work.
 
 ### Who needs to install?
 This mod must be installed for all players, not just the host. May still partially work if only the host has it installed, but that's:
