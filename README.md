@@ -33,7 +33,7 @@ An app like [r2modman](https://thunderstore.io/c/content-warning/p/ebkr/r2modman
 If you've downgraded to the previous version for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v.1.0.14, as those are verified to work.
 
 ### Manually
-Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch<br>
+Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch.<br>
 If you've downgraded to the previous version for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v.1.0.14, as those are verified to work.
 
 ### Who needs to install?
