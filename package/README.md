@@ -4,6 +4,7 @@
 [![Thunderstore Page](https://img.shields.io/thunderstore/v/gingerphoenix10/ContentPOVs?style=for-the-badge&logo=thunderstore)](https://thunderstore.io/c/content-warning/p/gingerphoenix10/ContentPOVs/)
 [![Thunderstore Downloads](https://img.shields.io/thunderstore/dt/gingerphoenix10/ContentPOVs?style=for-the-badge&logo=thunderstore&logoColor=white)](https://thunderstore.io/c/content-warning/p/gingerphoenix10/ContentPOVs)
 [![Build](https://img.shields.io/github/actions/workflow/status/gingerphoenix10/ContentPOVs/build.yml?style=for-the-badge&logo=github&branch=main)](https://github.com/gingerphoenix10/ContentPOVs/actions/workflows/build.yml)
+[![Workshop Build](https://img.shields.io/github/actions/workflow/status/gingerphoenix10/ContentPOVs/build.yml?style=for-the-badge&logo=github&branch=workshop&label=Workshop%20Build)](https://github.com/gingerphoenix10/ContentPOVs/actions/workflows/build.yml)
 
 [![Steam Downloads](https://img.shields.io/steam/downloads/3382770586?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586)
 [![Steam Subscriptions](https://img.shields.io/steam/subscriptions/3382770586?style=for-the-badge&logo=steam)](https://steamcommunity.com/sharedfiles/filedetails/?id=3382770586)
@@ -28,11 +29,11 @@ Capturing Everyone's POV one camera at a time
 ## Installation
 
 ### Mod Manager (Recommended)
-An app like [r2modman](https://thunderstore.io/c/content-warning/p/ebkr/r2modman/) or the [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) app will let you download this mod, along with all other Content Warning mods automatically, and split them into separate mod profiles.
+An app like [r2modman](https://thunderstore.io/c/content-warning/p/ebkr/r2modman/) or the [Thunderstore Mod Manager](https://www.overwolf.com/app/Thunderstore-Thunderstore_Mod_Manager) app will let you download this mod, along with all other Content Warning mods automatically, and split them into separate mod profiles.<br>
 If you've downgraded to the previous version for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v.1.0.14, as those are verified to work.
 
 ### Manually
-Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch
+Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the `(ZIP)\plugins\com.gingerphoenix10.POVs.dll` file into `(Content Warning Directory)\BepInEx\plugins`. Mod should start upon next launch.<br>
 If you've downgraded to the previous version for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v.1.0.14, as those are verified to work.
 
 ### Who needs to install?
