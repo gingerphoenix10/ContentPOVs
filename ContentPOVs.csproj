@@ -60,7 +60,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(CI) == 'true'">
-    <PackageReference Include="ContentWarning.GameLibs.Steam" Version="*-*" PrivateAssets="all" />
+    <PackageReference Include="MaxWasUnavailable.ContentWarning.Libs" Version="*-*" PrivateAssets="all" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(CI) != 'true'">
