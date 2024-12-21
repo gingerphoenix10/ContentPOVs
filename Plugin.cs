@@ -42,7 +42,7 @@ public class OnlyOwnerPickup : BoolSetting, IExposedSetting
         POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Only owner can pickup camera";
+    public string GetDisplayName() => "ContentPOVs - Only owner can pickup camera";
 
     protected override bool GetDefaultValue() => true;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
@@ -57,7 +57,7 @@ public class OnlyOwnerPickupBroken : BoolSetting, IExposedSetting
         POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Only owner can pickup broken camera";
+    public string GetDisplayName() => "ContentPOVs - Only owner can pickup broken camera";
 
     protected override bool GetDefaultValue() => false;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
@@ -71,7 +71,7 @@ public class CameraColorable : BoolSetting, IExposedSetting
         POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Match camera color to player's visor color";
+    public string GetDisplayName() => "ContentPOVs - Match camera color to player's visor color";
 
     protected override bool GetDefaultValue() => true;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
@@ -86,7 +86,7 @@ public class CameraNameable : BoolSetting, IExposedSetting
         POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Show user's name while hovering over camera";
+    public string GetDisplayName() => "ContentPOVs - Show user's name while hovering over camera";
 
     protected override bool GetDefaultValue() => true;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
@@ -101,7 +101,7 @@ public class CameraNameDisplay : BoolSetting, IExposedSetting
         POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Display the camera's owner at the bottom right of recordings";
+    public string GetDisplayName() => "ContentPOVs - Display the camera's owner at the bottom right of recordings";
 
     protected override bool GetDefaultValue() => true;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
@@ -116,7 +116,7 @@ public class DivideScore : BoolSetting, IExposedSetting
         POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "Divide the score you get by the amount of players in the lobby to balance out gameplay";
+    public string GetDisplayName() => "ContentPOVs - Divide the score you get by the amount of players in the lobby to balance out gameplay";
 
     protected override bool GetDefaultValue() => true;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
