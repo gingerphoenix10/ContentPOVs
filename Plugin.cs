@@ -619,7 +619,7 @@ public class POVPlugin : BaseUnityPlugin
         {
             if (type == typeof(ContentPOVs.POVCamera))
             {
-                __result = 11;
+                __result = 187;
                 return false;
             }
             return true;
@@ -628,7 +628,7 @@ public class POVPlugin : BaseUnityPlugin
         [HarmonyPatch("GetEntryType")]
         static bool GetEntryType(ref ItemDataEntry __result, byte identifier)
         {
-            if (identifier == 11)
+            if (identifier == 187)
             {
                 __result = new ContentPOVs.POVCamera();
                 return false;
