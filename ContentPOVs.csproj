@@ -28,9 +28,6 @@
         <Reference Include="PhotonUnityNetworking">
           <HintPath>$(CWDir)\Content Warning_Data\Managed\PhotonUnityNetworking.dll</HintPath>
         </Reference>
-        <Reference Include="System.Core">
-          <HintPath>$(CWDir)\Content Warning_Data\Managed\System.Core.dll</HintPath>
-        </Reference>
         <Reference Include="Unity.TextMeshPro">
           <HintPath>$(CWDir)\Content Warning_Data\Managed\Unity.TextMeshPro.dll</HintPath>
         </Reference>
@@ -61,6 +58,11 @@
     </ItemGroup>
     <ItemGroup Condition="$(CI) == 'true'">
         <PackageReference Include="MaxWasUnavailable.ContentWarning.Libs" Version="*-*" PrivateAssets="all" />
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="System.Core">
+        <HintPath>..\..\Lethal Company\Lethal Company_Data\Managed\System.Core.dll</HintPath>
+      </Reference>
     </ItemGroup>
     <Target Name="CopyOutputFileToGame" AfterTargets="Build">
         <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll;preview.png" DestinationFolder="$(CWDir)\Plugins\ContentPOVs" />
