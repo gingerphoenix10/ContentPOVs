@@ -66,6 +66,6 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(CI) != 'true'">
-    <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll" DestinationFolder="$(CWDir)\BepInEx\Plugins\$(AssemblyName)" />
+    <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll" DestinationFolder="$(CWDir)\BepInEx\Plugins" />
   </Target>
 </Project>
