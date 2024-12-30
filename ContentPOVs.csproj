@@ -65,7 +65,7 @@
       </Reference>
     </ItemGroup>
     <Target Name="CopyOutputFileToGame" AfterTargets="Build">
-        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll;preview.png" DestinationFolder="$(CWDir)\Plugins\ContentPOVs" />
+        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll;preview.png" DestinationFolder="$(CWDir)\Plugins\$(AssemblyName)" />
     </Target>
 
 </Project>
