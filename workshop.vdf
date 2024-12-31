@@ -1,0 +1,51 @@
+"workshopitem"
+{
+    	"appid"		"2881650"
+        "publishedfileid"		"3382770586"
+        "contentfolder"		"D:\Steam\steamapps\common\Content Warning\plugins\ContentPOVs"
+        "previewfile"		"D:\Steam\steamapps\common\Content Warning\plugins\ContentPOVs\preview.png"
+        "visibility"		"0"
+        "title"		"ContentPOVs"
+        "description"		"[h1][b]ContentPOVs[/b][/h1][hr]
+        [i]Capturing Everyone's POV one camera at a time[/i]
+
+        [h2][b]Features[/b][/h2][hr]
+        - Spawn a camera for every player in the lobby
+        - Set POV cameras' color to the player's Visor color, and pickup text to show who it belongs to (toggleable)
+        - Only allow the cameras' owner to pickup their camera (toggleable)
+        - Display cameras' owner at the bottom right of each recording (toggleable)
+        - Full Virality support (4+ players, late joining)
+        - Compatibility with most, if not all other Content Warning mods
+        - Divides the amount of views you get by your player count, so the whole crew has to work together to reach quota (toggleable)
+
+        [h2][b]Installation[/b][/h2][hr]
+        [h3]Steam Workshop (Recommended)[/h3]
+        
+        Since you're already here, the simplest way to install the mod is to just click the green [i]subscribe[/i] button below. The mod will then download automatically
+
+        [h3]Mod Manager (BepInEx, NOT RECOMMENDED)[/h3]
+
+        An app like [url=https://thunderstore.io/c/content-warning/p/ebkr/r2modman/]r2modman[/url] or the [url=https://thunderstore.io/c/content-warning/p/ebkr/r2modman/]Thunderstore Mod Manager[/url] app will let you download this mod, along with other BepInEx Content Warning mods automatically, and split them into separate mod profiles.
+        If you've downgraded to a previous version of Content Warning for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v1.0.14, as those are verified to work.
+
+        [h3]Manually (BepInEx, VERY NOT RECOMMENDED)[/h3]
+
+        Make sure you have BepInEx installed on Content Warning, then download the mod zip file and move the [code](ZIP)\plugins\com.gingerphoenix10.POVs.dll[/code] file into [code](Content Warning Directory)\BepInEx\plugins[/code]. Mod should start upon next launch.
+        If you've downgraded to a previous version of Content Warning for mod compatibility, install ContentPOVs v1.1.1, ShopUtils v1.0.8, ContentSettings v1.2.2 and MyceliumNetworking v1.0.14, as those are verified to work.
+
+        [h3]Who needs to install? (Is this vanilla compatible?)[/h3]
+        
+        This mod must be installed for all players, not just the host. May still partially work if only the host has it installed, but that's:
+        - Not (and will not be) tested
+        - Will not work correctly
+        - May stop working from any update
+        It other words, NO it is NOT vanilla compatible. Sorry :)
+
+        [h2][b]Contributing[/b][/h2][hr]
+        If you have a bug report, feature request, enhancement, etc, feel free to [url=https://github.com/gingerphoenix10/ContentPOVs/issues]submit an issue on the GitHub page![/url] Any support helps.
+        If you have any programming knowledge and would like to help out with the project, feel free to fork the project and submit a pull request to help resolve issues, requests, etc.
+
+        [h2][b]Credits[/b][/h2][hr]
+        gingerphoenix10 - At least 2% of the code by now
+        ChatGPT - like 98% of the code idk"
+}
