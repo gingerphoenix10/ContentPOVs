@@ -4,7 +4,7 @@ using ExitGames.Client.Photon;
 
 namespace ContentPOVs;
 
-[ContentWarningPlugin("ContentPOVs", "1.3.1", false)]
+[ContentWarningPlugin("ContentPOVs", "1.3.2", false)]
 public class POVPlugin
 {
     internal static bool OwnerPickup = true;
