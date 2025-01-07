@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Photon.Pun;
 using Steamworks;
+using UnityEngine;
 
 namespace ContentPOVs.Patches;
 
@@ -13,30 +14,48 @@ namespace ContentPOVs.Patches;
         {
             if (__instance.itemInstance.item.id == 1)
             {
-                HashSet<ItemDataEntry> entries = __instance.itemInstance.instanceData.m_dataEntries;
-                foreach (ItemDataEntry entry in entries)
+                ItemInstanceData data = __instance.itemInstance.instanceData;
+                if (data.TryGetEntry<POVCamera>(out POVCamera povCamera))
                 {
-                    if (entry is not POVCamera povCamera) continue;
                     if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && POVPlugin.HostOwnerPickup && povCamera.plrID != "-1" && povCamera.plrID != "-2")
                     {
+                        if (POVPlugin.HostDeadCameras)
+                        {
+                            foreach (Player playerInstance in UnityEngine.Object.FindObjectsOfType<Player>())
+                            {
+                                if (playerInstance.ai) continue;
+                                if (playerInstance.photonView.Owner.CustomProperties["SteamID"] as string == povCamera.plrID && playerInstance.data.dead)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
                         __instance.m_photonView.RPC("RPC_FailedToPickup", PhotonNetwork.GetPhotonView(photonView).GetComponent<Player>().refs.view.Owner);
                         return false;
                     }
-                    break;
                 }
             }
             else if (__instance.itemInstance.item.id == 2)
             {
-                HashSet<ItemDataEntry> entries = __instance.itemInstance.instanceData.m_dataEntries;
-                foreach (ItemDataEntry entry in entries)
+                ItemInstanceData data = __instance.itemInstance.instanceData;
+                if (data.TryGetEntry<POVCamera>(out POVCamera povCamera))
                 {
-                    if (entry is not POVCamera povCamera) continue;
                     if (povCamera.plrID != PhotonNetwork.GetPhotonView(photonView).Owner.CustomProperties["SteamID"] as string && POVPlugin.HostOwnerPickupBroken && povCamera.plrID != "-1" && povCamera.plrID != "-2")
                     {
+                        if (POVPlugin.HostDeadCameras)
+                        {
+                            foreach (Player playerInstance in UnityEngine.Object.FindObjectsOfType<Player>())
+                            {
+                                if (playerInstance.ai) continue;
+                                if (playerInstance.photonView.Owner.CustomProperties["SteamID"] as string == povCamera.plrID && playerInstance.data.dead)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
                         __instance.m_photonView.RPC("RPC_FailedToPickup", PhotonNetwork.GetPhotonView(photonView).GetComponent<Player>().refs.view.Owner);
                         return false;
                     }
-                    break;
                 }
             }
             return true;
@@ -54,30 +73,27 @@ namespace ContentPOVs.Patches;
             }
         }
 
-        [HarmonyPrefix]
+        /*[HarmonyPrefix]
         [HarmonyPatch("Interact")]
         internal static bool Interact(Player player, Pickup __instance)
         {
             if (__instance.itemInstance.item.id == 1)
             {
-                HashSet<ItemDataEntry> entries = __instance.itemInstance.instanceData.m_dataEntries;
-                foreach (ItemDataEntry entry in entries)
+                ItemInstanceData data = __instance.itemInstance.instanceData;
+                if (data.TryGetEntry<POVCamera>(out POVCamera povCamera))
                 {
-                    if (entry is not POVCamera povCamera) continue;
                     if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && POVPlugin.HostOwnerPickup && povCamera.plrID != "-1" && povCamera.plrID != "-2") return false;
-                    break;
                 }
             }
             else if (__instance.itemInstance.item.id == 2)
             {
-                HashSet<ItemDataEntry> entries = __instance.itemInstance.instanceData.m_dataEntries;
-                foreach (ItemDataEntry entry in entries)
+                ItemInstanceData data = __instance.itemInstance.instanceData;
+                if (data.TryGetEntry<POVCamera>(out POVCamera povCamera))
                 {
-                    if (entry is not POVCamera povCamera) continue;
                     if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && POVPlugin.HostOwnerPickupBroken && povCamera.plrID != "-1" && povCamera.plrID != "-2") return false;
                     break;
                 }
             }
             return true;
-        }
+        }*/
     }
