@@ -14,7 +14,7 @@
         <Reference Include="$(CWDir)\Content Warning_Data\Managed\*.dll" Private="false" Exclude="$(CWDir)\Content Warning_Data\Managed\Assembly-CSharp*.dll"/>
     </ItemGroup>
     <ItemGroup Condition="$(CI) == 'true'">
-        <PackageReference Include="MaxWasUnavailable.ContentWarning.Libs" Version="*-*" PrivateAssets="all" />
+        <PackageReference Include="MaxWasUnavailable.ContentWarning.Libs" Version="*-*" PrivateAssets="all" Publicize="True" />
     </ItemGroup>
 
     <ItemGroup>
