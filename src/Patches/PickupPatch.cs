@@ -73,7 +73,7 @@ namespace ContentPOVs.Patches;
             }
         }
 
-        /*[HarmonyPrefix]
+        [HarmonyPrefix]
         [HarmonyPatch("Interact")]
         internal static bool Interact(Player player, Pickup __instance)
         {
@@ -82,6 +82,17 @@ namespace ContentPOVs.Patches;
                 ItemInstanceData data = __instance.itemInstance.instanceData;
                 if (data.TryGetEntry<POVCamera>(out POVCamera povCamera))
                 {
+                    if (POVPlugin.HostDeadCameras)
+                    {
+                        foreach (Player playerInstance in UnityEngine.Object.FindObjectsOfType<Player>())
+                        {
+                            if (playerInstance.ai) continue;
+                            if (playerInstance.photonView.Owner.CustomProperties["SteamID"] as string == povCamera.plrID && playerInstance.data.dead)
+                            {
+                                return true;
+                            }
+                        }
+                    }
                     if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && POVPlugin.HostOwnerPickup && povCamera.plrID != "-1" && povCamera.plrID != "-2") return false;
                 }
             }
@@ -90,10 +101,20 @@ namespace ContentPOVs.Patches;
                 ItemInstanceData data = __instance.itemInstance.instanceData;
                 if (data.TryGetEntry<POVCamera>(out POVCamera povCamera))
                 {
+                    if (POVPlugin.HostDeadCameras)
+                    {
+                        foreach (Player playerInstance in UnityEngine.Object.FindObjectsOfType<Player>())
+                        {
+                            if (playerInstance.ai) continue;
+                            if (playerInstance.photonView.Owner.CustomProperties["SteamID"] as string == povCamera.plrID && playerInstance.data.dead)
+                            {
+                                return true;
+                            }
+                        }
+                    }
                     if (povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString() && POVPlugin.HostOwnerPickupBroken && povCamera.plrID != "-1" && povCamera.plrID != "-2") return false;
-                    break;
                 }
             }
             return true;
-        }*/
+        }
     }

@@ -10,18 +10,10 @@
     </PropertyGroup>
 
     <ItemGroup Condition="$(CI) != 'true'">
-        <Reference Include="$(CWDir)\Content Warning_Data\Managed\Assembly-CSharp*.dll" Private="false" Publicize="True"/>
-        <Reference Include="$(CWDir)\Content Warning_Data\Managed\*.dll" Private="false" Exclude="$(CWDir)\Content Warning_Data\Managed\Assembly-CSharp*.dll"/>
+        <Reference Include="$(CWDir)\Content Warning_Data\Managed\*.dll" Private="false" />
     </ItemGroup>
     <ItemGroup Condition="$(CI) == 'true'">
-        <PackageReference Include="MaxWasUnavailable.ContentWarning.Libs" Version="*-*" PrivateAssets="all" Publicize="True" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="MaxWasUnavailable.ContentWarning.Libs" Version="*-*" PrivateAssets="all" />
     </ItemGroup>
 
     <Target Name="CopyOutputFileToGame" AfterTargets="Build">

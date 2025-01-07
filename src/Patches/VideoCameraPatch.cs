@@ -1,3 +1,4 @@
+using System.Reflection;
 using HarmonyLib;
 using Steamworks;
     
@@ -10,7 +11,8 @@ internal static class VideoCameraPatch
     [HarmonyPatch("get_HasFilmLeft")]
     static bool HasFilmLeft(VideoCamera __instance, ref bool __result)
     {
-        if (!POVPlugin.HostDeadRecord && POVPlugin.HostOwnerPickup && __instance.m_instanceData.TryGetEntry<POVCamera>(out POVCamera povCamera))
+        ItemInstanceData m_instanceData = (ItemInstanceData)typeof(VideoCamera).GetField("m_instanceData", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
+        if (!POVPlugin.HostDeadRecord && POVPlugin.HostOwnerPickup && m_instanceData.TryGetEntry<POVCamera>(out POVCamera povCamera))
         {
             if (povCamera.plrID != "-1" && povCamera.plrID != "-2" && povCamera.plrID != SteamUser.GetSteamID().m_SteamID.ToString())
             {
