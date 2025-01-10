@@ -3,11 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.2
+- Added options for picking up / using cameras owned by dead players
+- Optimised the mod a lil bit I think
+
+## 1.3.1
+- Change mod settings prefix to "[ContentPOVs] "
+- Write an actual Steam Workshop description based on the Thunderstore, GitHub and Personal Site README’s
+
 ## 1.3.0
 - Internal code restructure. No actual changes to the mod
 
 ## 1.2.0
-- Reworked to support the latest version of Content Warning (just make sure you don't have both Thunderstore and Workshop versions installed
+- Reworked to support the latest version of Content Warning (just make sure you don't have both Thunderstore and Workshop versions installed)
 - Updated README
 
 ## 1.1.1
@@ -24,7 +32,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## 1.0.5
 - Added v1.0.4, because I might've forgotten to actually add the updated code ._.
 - Fixed bug where any player could change the server's mod settings
-- Fixed purchased broken cameras showing up as "?'s Broken Camera"
+- Fixed broken purchased cameras showing up as "?'s Broken Camera"
 - Fixed GitHub actions build. Now passing
 - Updated README
 

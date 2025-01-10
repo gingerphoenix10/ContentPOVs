@@ -31,6 +31,7 @@ public class OnlyOwnerPickupBroken : BoolSetting, IExposedSetting
     protected override bool GetDefaultValue() => false;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
 }
+
 [ContentWarningSetting]
 public class CameraColorable : BoolSetting, IExposedSetting
 {
@@ -88,5 +89,36 @@ public class DivideScore : BoolSetting, IExposedSetting
     public string GetDisplayName() => "[ContentPOVs] Divide the score you get by the amount of players in the lobby to balance out gameplay";
 
     protected override bool GetDefaultValue() => true;
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+}
+
+[ContentWarningSetting]
+public class PickupDeadCameras : BoolSetting, IExposedSetting
+{
+    public override void ApplyValue()
+    {
+        POVPlugin.DeadCameras = Value;
+        POVPlugin.UpdateConfig();
+    }
+
+    public string GetDisplayName() => "[ContentPOVs] Let anyone pickup the cameras of dead players (but not record)";
+
+    protected override bool GetDefaultValue() => false;
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+}
+
+[ContentWarningSetting]
+public class RecordDeadCameras : BoolSetting, IExposedSetting
+{
+    public override void ApplyValue()
+    {
+        POVPlugin.DeadRecord = Value;
+        POVPlugin.UpdateConfig();
+    }
+
+    public string GetDisplayName() =>
+        "[ContentPOVs] Allow recording with dead players' cameras (Requires above setting)";
+
+    protected override bool GetDefaultValue() => false;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
 }

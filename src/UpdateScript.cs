@@ -36,10 +36,9 @@ class UpdateScript : MonoBehaviour
             foreach (VideoCamera cam in UnityEngine.Object.FindObjectsOfType<VideoCamera>())
             {
                 bool hasPov = false;
-                HashSet<ItemDataEntry> entries = cam.GetComponent<ItemInstance>().instanceData.m_dataEntries;
-                foreach (ItemDataEntry entry in entries)
+                ItemInstanceData data = cam.GetComponent<ItemInstance>().instanceData;
+                if (data.TryGetEntry<POVCamera>(out POVCamera povCamera))
                 {
-                    if (entry is not POVCamera povCamera) continue;
                     if (povCamera.plrID == "-1")
                     {
                         hasPov = true;
@@ -143,10 +142,9 @@ class UpdateScript : MonoBehaviour
             {
                 if (item.item.id != 2) continue;
                 string hasPov = "-2";
-                HashSet<ItemDataEntry> entries = item.instanceData.m_dataEntries;
-                foreach (ItemDataEntry entry in entries)
+                ItemInstanceData data = item.instanceData;
+                if (data.TryGetEntry<POVCamera>(out POVCamera povCamera))
                 {
-                    if (entry is not POVCamera povCamera) continue;
                     if (povCamera.plrID == "-1")
                     {
                         hasPov = "-1";

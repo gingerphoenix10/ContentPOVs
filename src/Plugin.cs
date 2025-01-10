@@ -19,12 +19,17 @@ public class POVPlugin : BaseUnityPlugin
     internal static bool Nameable = true;
     internal static bool NameDisplay = true;
     internal static bool ScoreDivision = true;
+    internal static bool DeadCameras = false;
+    internal static bool DeadRecord = false;
+    
     internal static bool HostOwnerPickup = true;
     internal static bool HostOwnerPickupBroken = false;
     internal static bool HostColorable = true;
     internal static bool HostNameable = true;
     internal static bool HostNameDisplay = true;
     internal static bool HostScoreDivision = true;
+    internal static bool HostDeadCameras = false;
+    internal static bool HostDeadRecord = false;
     internal static void UpdateConfig()
     {
         if (!PhotonNetwork.IsMasterClient) return;
@@ -35,6 +40,8 @@ public class POVPlugin : BaseUnityPlugin
         settings.Add("Nameable", Nameable);
         settings.Add("NameDisplay", NameDisplay);
         settings.Add("ScoreDivision", ScoreDivision);
+        settings.Add("DeadCameras", DeadCameras);
+        settings.Add("DeadRecord", DeadRecord);
         PhotonNetwork.CurrentRoom.SetCustomProperties(settings);
     }
     internal static bool TryLoadConfig(string optionName, bool fallback)
@@ -50,6 +57,8 @@ public class POVPlugin : BaseUnityPlugin
         HostNameable = TryLoadConfig("Nameable", Nameable);
         HostNameDisplay = TryLoadConfig("NameDisplay", NameDisplay);
         HostScoreDivision = TryLoadConfig("ScoreDivision", ScoreDivision);
+        HostDeadCameras = TryLoadConfig("DeadCameras", DeadCameras);
+        HostDeadRecord = TryLoadConfig("DeadRecord", DeadRecord);
     }
     private void Awake()
     {
