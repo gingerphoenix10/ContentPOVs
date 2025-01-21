@@ -262,4 +262,9 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
     {
         POVPlugin.LoadConfig();
     }
+
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+
+    }
 }

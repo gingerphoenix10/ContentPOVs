@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using Photon.Pun;
 using ExitGames.Client.Photon;
+using Steamworks;
+using Zorro.Core.CLI;
 
 namespace ContentPOVs;
 
-[ContentWarningPlugin("ContentPOVs", "1.3.2", false)]
+[ContentWarningPlugin("ContentPOVs", "1.3.3", false)]
 public class POVPlugin
 {
     internal static bool OwnerPickup = true;
@@ -68,5 +70,26 @@ public class POVPlugin
         {
             UpdateScript.awaitingCamera.Add(UnityEngine.Object.FindObjectsOfType<Player>()[i].GetComponent<PhotonView>().Owner);
         }
+    }
+    
+    [ConsoleCommand]
+    public static void TrySpawn(string SteamID)
+    {
+        try
+        {
+            CSteamID id = new(Convert.ToUInt64(SteamID));
+            Debug.Log("Attempting to summon a camera for " + SteamFriends.GetFriendPersonaName(id));
+        }
+        catch
+        {
+            Debug.Log("Attempting to summon a camera for ?");
+        }
+
+        Pickup cam = PickupHandler.CreatePickup((byte)1, new ItemInstanceData(Guid.NewGuid()), MainCamera.instance.GetDebugItemSpawnPos(), Quaternion.Euler(0f, 0f, 0f));
+        ItemInstance itemInstance = cam.itemInstance;
+
+        POVCamera camera = new POVCamera();
+        camera.plrID = SteamID;
+        itemInstance.instanceData.m_dataEntries.Add(camera);
     }
 }
