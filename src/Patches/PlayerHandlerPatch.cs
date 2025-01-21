@@ -1,0 +1,15 @@
+using UnityEngine;
+using HarmonyLib;
+
+namespace ContentPOVs.Patches;
+
+[HarmonyPatch(typeof(PlayerHandler))]
+public class PlayerHandlerPatch
+{
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(PlayerHandler.AddPlayer))]
+    public static void AddPlayer(Player player)
+    {
+        if (SurfaceNetworkHandler.HasStarted) UpdateScript.awaitingCamera.Add(player.refs.view.Owner);
+    }
+}
