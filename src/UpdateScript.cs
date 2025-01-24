@@ -1,4 +1,6 @@
-﻿using Photon.Pun;
+﻿using System;
+using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 using System.Reflection;
 using ExitGames.Client.Photon;

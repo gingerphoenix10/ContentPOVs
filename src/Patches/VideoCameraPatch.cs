@@ -8,7 +8,7 @@ namespace ContentPOVs.Patches;
 internal static class VideoCameraPatch
 {
     [HarmonyPrefix]
-    [HarmonyPatch("get_HasFilmLeft")]
+    [HarmonyPatch("HasFilmLeft", MethodType.Getter)]
     static bool HasFilmLeft(VideoCamera __instance, ref bool __result)
     {
         ItemInstanceData m_instanceData = (ItemInstanceData)typeof(VideoCamera).GetField("m_instanceData", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance);
