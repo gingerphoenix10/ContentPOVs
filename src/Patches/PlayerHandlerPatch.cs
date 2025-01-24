@@ -10,6 +10,6 @@ public class PlayerHandlerPatch
     [HarmonyPatch(nameof(PlayerHandler.AddPlayer))]
     public static void AddPlayer(Player player)
     {
-        if (SurfaceNetworkHandler.HasStarted) UpdateScript.awaitingCamera.Add(player.refs.view.Owner);
+        if (SurfaceNetworkHandler.HasStarted && TimeOfDayHandler.TimeOfDay == TimeOfDay.Morning) UpdateScript.awaitingCamera.Add(player.refs.view.Owner);
     }
 }
