@@ -7,7 +7,7 @@ using System;
 
 namespace ContentPOVs;
 
-[ContentWarningPlugin("ContentPOVs", "1.3.4", false)]
+[ContentWarningPlugin("ContentPOVs", "1.3.5", false)]
 public class POVPlugin
 {
     internal static bool OwnerPickup = true;
@@ -29,13 +29,13 @@ public class POVPlugin
 
     static POVPlugin()
     {
-        if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.gingerphoenix10.povs"))
+        /*if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.gingerphoenix10.povs"))
         {
             Modal.Show("ContentPOVs Duplicate Install", "ContentPOVs has been installed via both BepInEx (probably Thunderstore), AND the Steam Workshop. This will probably break the mod, so try and uninstall one of these versions :)", new ModalOption[]
             {
                 new ModalOption("OK", null)
             }, null);
-        }
+        } THIS BREAKS SHIT IF YOU DON'T HAVE BEPINEX */
         GameObject gameManager = new GameObject();
         gameManager.name = "ContentPOVs";
         gameManager.AddComponent<UpdateScript>();
