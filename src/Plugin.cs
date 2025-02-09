@@ -19,6 +19,7 @@ public class POVPlugin : BaseUnityPlugin
     internal static bool Nameable = true;
     internal static bool NameDisplay = true;
     internal static bool ScoreDivision = true;
+    internal static float ScoreFactor = 100;
     internal static bool DeadCameras = false;
     internal static bool DeadRecord = false;
     
@@ -28,37 +29,40 @@ public class POVPlugin : BaseUnityPlugin
     internal static bool HostNameable = true;
     internal static bool HostNameDisplay = true;
     internal static bool HostScoreDivision = true;
+    internal static float HostScoreFactor = 100;
     internal static bool HostDeadCameras = false;
     internal static bool HostDeadRecord = false;
     internal static void UpdateConfig()
     {
         if (!PhotonNetwork.IsMasterClient) return;
         Hashtable settings = new();
-        settings.Add("OwnerPickup", OwnerPickup);
-        settings.Add("OwnerPickupBroken", OwnerPickupBroken);
-        settings.Add("Colorable", Colorable);
-        settings.Add("Nameable", Nameable);
-        settings.Add("NameDisplay", NameDisplay);
-        settings.Add("ScoreDivision", ScoreDivision);
-        settings.Add("DeadCameras", DeadCameras);
-        settings.Add("DeadRecord", DeadRecord);
+        settings.Add("ownerPickup", OwnerPickup);
+        settings.Add("ownerPickupBroken", OwnerPickupBroken);
+        settings.Add("colorable", Colorable);
+        settings.Add("nameable", Nameable);
+        settings.Add("nameDisplay", NameDisplay);
+        settings.Add("scoreDivision", ScoreDivision);
+        settings.Add("scoreFactor", ScoreFactor);
+        settings.Add("deadCameras", DeadCameras);
+        settings.Add("deadRecord", DeadRecord);
         PhotonNetwork.CurrentRoom.SetCustomProperties(settings);
     }
-    internal static bool TryLoadConfig(string optionName, bool fallback)
+    private static object TryLoadConfig(string optionName, object fallback)
     {
         if (PhotonNetwork.CurrentRoom.CustomProperties[optionName] == null) return fallback;
-        else return (bool)PhotonNetwork.CurrentRoom.CustomProperties[optionName];
+        else return PhotonNetwork.CurrentRoom.CustomProperties[optionName];
     }
     internal static void LoadConfig()
     {
-        HostOwnerPickup = TryLoadConfig("OwnerPickup", OwnerPickup);
-        HostOwnerPickupBroken = TryLoadConfig("OwnerPickupBroken", OwnerPickupBroken);
-        HostColorable = TryLoadConfig("Colorable", Colorable);
-        HostNameable = TryLoadConfig("Nameable", Nameable);
-        HostNameDisplay = TryLoadConfig("NameDisplay", NameDisplay);
-        HostScoreDivision = TryLoadConfig("ScoreDivision", ScoreDivision);
-        HostDeadCameras = TryLoadConfig("DeadCameras", DeadCameras);
-        HostDeadRecord = TryLoadConfig("DeadRecord", DeadRecord);
+        HostOwnerPickup = (bool)TryLoadConfig("ownerPickup", OwnerPickup);
+        HostOwnerPickupBroken = (bool)TryLoadConfig("ownerPickupBroken", OwnerPickupBroken);
+        HostColorable = (bool)TryLoadConfig("colorable", Colorable);
+        HostNameable = (bool)TryLoadConfig("nameable", Nameable);
+        HostNameDisplay = (bool)TryLoadConfig("nameDisplay", NameDisplay);
+        HostScoreDivision = (bool)TryLoadConfig("scoreDivision", ScoreDivision);
+        HostScoreFactor = (float)TryLoadConfig("scoreFactor", ScoreFactor);
+        HostDeadCameras = (bool)TryLoadConfig("deadCameras", DeadCameras);
+        HostDeadRecord = (bool)TryLoadConfig("deadRecord", DeadRecord);
     }
     private void Awake()
     {

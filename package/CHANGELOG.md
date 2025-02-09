@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.6
+- Added the option to change how much view division is affected by more players
+
+## 1.3.5
+- Reverted the duplicate mod check, as it crashes the mod if BepInEx isn't installed
+
 ## 1.3.4
 - Fixed a bug where cameras would be duplicated when going to or coming back from old world
 - Added duplicate mod detection (BepInEx and Workshop both installed)

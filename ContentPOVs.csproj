@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>com.gingerphoenix10.povs</AssemblyName>
     <Product>ContentPOVs</Product>
-    <Version>1.3.4</Version>
+    <Version>1.3.6</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>latest</LangVersion>
     <RestoreAdditionalProjectSources>
@@ -43,6 +43,9 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>$(CWDir)\Content Warning_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>$(CWDir)\Content Warning_Data\Managed\Unity.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="Zorro.Core.Runtime">
       <HintPath>$(CWDir)\Content Warning_Data\Managed\Zorro.Core.Runtime.dll</HintPath>
