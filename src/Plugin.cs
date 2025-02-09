@@ -7,7 +7,7 @@ using System;
 
 namespace ContentPOVs;
 
-[ContentWarningPlugin("ContentPOVs", "1.3.5", false)]
+[ContentWarningPlugin("ContentPOVs", "1.3.6", false)]
 public class POVPlugin
 {
     internal static bool OwnerPickup = true;
@@ -16,14 +16,17 @@ public class POVPlugin
     internal static bool Nameable = true;
     internal static bool NameDisplay = true;
     internal static bool ScoreDivision = true;
+    internal static float ScoreFactor = 100;
     internal static bool DeadCameras;
     internal static bool DeadRecord;
+    
     internal static bool HostOwnerPickup = true;
     internal static bool HostOwnerPickupBroken = false;
     internal static bool HostColorable = true;
     internal static bool HostNameable = true;
     internal static bool HostNameDisplay = true;
     internal static bool HostScoreDivision = true;
+    internal static float HostScoreFactor = 100;
     internal static bool HostDeadCameras = false;
     internal static bool HostDeadRecord = false;
 
@@ -52,25 +55,27 @@ public class POVPlugin
         settings.Add("nameable", Nameable);
         settings.Add("nameDisplay", NameDisplay);
         settings.Add("scoreDivision", ScoreDivision);
-        settings.Add("DeadCameras", DeadCameras);
-        settings.Add("DeadRecord", DeadRecord);
+        settings.Add("scoreFactor", ScoreFactor);
+        settings.Add("deadCameras", DeadCameras);
+        settings.Add("deadRecord", DeadRecord);
         PhotonNetwork.CurrentRoom.SetCustomProperties(settings);
     }
-    private static bool TryLoadConfig(string optionName, bool fallback)
+    private static object TryLoadConfig(string optionName, object fallback)
     {
         if (PhotonNetwork.CurrentRoom.CustomProperties[optionName] == null) return fallback;
-        else return (bool)PhotonNetwork.CurrentRoom.CustomProperties[optionName];
+        else return PhotonNetwork.CurrentRoom.CustomProperties[optionName];
     }
     internal static void LoadConfig()
     {
-        HostOwnerPickup = TryLoadConfig("ownerPickup", OwnerPickup);
-        HostOwnerPickupBroken = TryLoadConfig("ownerPickupBroken", OwnerPickupBroken);
-        HostColorable = TryLoadConfig("colorable", Colorable);
-        HostNameable = TryLoadConfig("nameable", Nameable);
-        HostNameDisplay = TryLoadConfig("nameDisplay", NameDisplay);
-        HostScoreDivision = TryLoadConfig("scoreDivision", ScoreDivision);
-        HostDeadCameras = TryLoadConfig("DeadCameras", DeadCameras);
-        HostDeadRecord = TryLoadConfig("DeadRecord", DeadRecord);
+        HostOwnerPickup = (bool)TryLoadConfig("ownerPickup", OwnerPickup);
+        HostOwnerPickupBroken = (bool)TryLoadConfig("ownerPickupBroken", OwnerPickupBroken);
+        HostColorable = (bool)TryLoadConfig("colorable", Colorable);
+        HostNameable = (bool)TryLoadConfig("nameable", Nameable);
+        HostNameDisplay = (bool)TryLoadConfig("nameDisplay", NameDisplay);
+        HostScoreDivision = (bool)TryLoadConfig("scoreDivision", ScoreDivision);
+        HostScoreFactor = (float)TryLoadConfig("scoreFactor", ScoreFactor);
+        HostDeadCameras = (bool)TryLoadConfig("deadCameras", DeadCameras);
+        HostDeadRecord = (bool)TryLoadConfig("deadRecord", DeadRecord);
     }
     public static void SpawnCams()
     {

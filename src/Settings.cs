@@ -1,4 +1,5 @@
 ﻿using Zorro.Settings;
+using Unity.Mathematics;
 
 namespace ContentPOVs;
 
@@ -86,10 +87,31 @@ public class DivideScore : BoolSetting, IExposedSetting
         POVPlugin.UpdateConfig();
     }
 
-    public string GetDisplayName() => "[ContentPOVs] Divide the score you get by the amount of players in the lobby to balance out gameplay";
+    public string GetDisplayName() => "[ContentPOVs] Divide camera views between all players";
 
     protected override bool GetDefaultValue() => true;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+}
+
+[ContentWarningSetting]
+public class ScoreFactor : FloatSetting, IExposedSetting
+{
+    public override void ApplyValue()
+    {
+        POVPlugin.ScoreFactor = Value;
+        POVPlugin.UpdateConfig();
+    }
+
+    public string GetDisplayName() => "[ContentPOVs] Player view influence.\n\n(Requires above setting. 0 = regular views, 100 = divide views equally between all players)";
+
+    protected override float GetDefaultValue() => 100f;
+
+    public SettingCategory GetSettingCategory() => SettingCategory.Mods;
+
+    protected override float2 GetMinMaxValue()
+    {
+        return new float2(0f, 100f);
+    }
 }
 
 [ContentWarningSetting]
@@ -117,7 +139,7 @@ public class RecordDeadCameras : BoolSetting, IExposedSetting
     }
 
     public string GetDisplayName() =>
-        "[ContentPOVs] Allow recording with dead players' cameras (Requires above setting)";
+        "[ContentPOVs] Allow recording with dead players' cameras\n\n(Requires above setting)";
 
     protected override bool GetDefaultValue() => false;
     public SettingCategory GetSettingCategory() => SettingCategory.Mods;
