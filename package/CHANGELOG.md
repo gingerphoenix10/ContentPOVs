@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.7
+- No changes, just recompiled to support Content Warning v1.20.1
+
 ## 1.3.6
 - Added the option to change how much view division is affected by more players
 
