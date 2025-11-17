@@ -7,7 +7,7 @@ using System;
 
 namespace ContentPOVs;
 
-[ContentWarningPlugin("ContentPOVs", "1.3.6", false)]
+[ContentWarningPlugin("ContentPOVs", "1.3.7", false)]
 public class POVPlugin
 {
     internal static bool OwnerPickup = true;
@@ -79,9 +79,9 @@ public class POVPlugin
     }
     public static void SpawnCams()
     {
-        for (int i = 0; i < UnityEngine.Object.FindObjectsOfType<Player>().Length + 0; i++)
+        for (int i = 0; i < UnityEngine.Object.FindObjectsByType<Player>(FindObjectsSortMode.InstanceID).Length + 0; i++)
         {
-            UpdateScript.awaitingCamera.Add(UnityEngine.Object.FindObjectsOfType<Player>()[i].GetComponent<PhotonView>().Owner);
+            UpdateScript.awaitingCamera.Add(UnityEngine.Object.FindObjectsByType<Player>(FindObjectsSortMode.InstanceID)[i].GetComponent<PhotonView>().Owner);
         }
     }
     

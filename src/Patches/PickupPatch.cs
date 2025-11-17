@@ -21,7 +21,7 @@ namespace ContentPOVs.Patches;
                     {
                         if (POVPlugin.HostDeadCameras)
                         {
-                            foreach (Player playerInstance in UnityEngine.Object.FindObjectsOfType<Player>())
+                            foreach (Player playerInstance in UnityEngine.Object.FindObjectsByType<Player>(FindObjectsSortMode.InstanceID))
                             {
                                 if (playerInstance.ai) continue;
                                 if (playerInstance.photonView.Owner.CustomProperties["SteamID"] as string == povCamera.plrID && playerInstance.data.dead)
@@ -44,7 +44,7 @@ namespace ContentPOVs.Patches;
                     {
                         if (POVPlugin.HostDeadCameras)
                         {
-                            foreach (Player playerInstance in UnityEngine.Object.FindObjectsOfType<Player>())
+                            foreach (Player playerInstance in UnityEngine.Object.FindObjectsByType<Player>(FindObjectsSortMode.InstanceID))
                             {
                                 if (playerInstance.ai) continue;
                                 if (playerInstance.photonView.Owner.CustomProperties["SteamID"] as string == povCamera.plrID && playerInstance.data.dead)
@@ -84,7 +84,7 @@ namespace ContentPOVs.Patches;
                 {
                     if (POVPlugin.HostDeadCameras)
                     {
-                        foreach (Player playerInstance in UnityEngine.Object.FindObjectsOfType<Player>())
+                        foreach (Player playerInstance in UnityEngine.Object.FindObjectsByType<Player>(FindObjectsSortMode.InstanceID))
                         {
                             if (playerInstance.ai) continue;
                             if (playerInstance.photonView.Owner.CustomProperties["SteamID"] as string == povCamera.plrID && playerInstance.data.dead)
@@ -103,7 +103,7 @@ namespace ContentPOVs.Patches;
                 {
                     if (POVPlugin.HostDeadCameras)
                     {
-                        foreach (Player playerInstance in UnityEngine.Object.FindObjectsOfType<Player>())
+                        foreach (Player playerInstance in UnityEngine.Object.FindObjectsByType<Player>(FindObjectsSortMode.InstanceID))
                         {
                             if (playerInstance.ai) continue;
                             if (playerInstance.photonView.Owner.CustomProperties["SteamID"] as string == povCamera.plrID && playerInstance.data.dead)

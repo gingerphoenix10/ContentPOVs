@@ -33,7 +33,7 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
                 awaitingCamera.RemoveAt(i);
             }
         }
-        foreach (VideoCamera cam in UnityEngine.Object.FindObjectsOfType<VideoCamera>())
+        foreach (VideoCamera cam in UnityEngine.Object.FindObjectsByType<VideoCamera>(FindObjectsSortMode.InstanceID))
         {
             bool hasPov = false;
             ItemInstanceData data = cam.GetComponent<ItemInstance>().instanceData;
@@ -45,7 +45,7 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
                     break;
                 }
                 Player matched = new();
-                foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsOfType<PlayerVisor>())
+                foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsByType<PlayerVisor>(FindObjectsSortMode.InstanceID))
                 {
                     Player plr = vis.gameObject.GetComponent<Player>();
                     if (plr.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"] as string == povCamera.plrID)
@@ -105,13 +105,13 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
                     filmGroup.localScale = Vector3.one * 1.5f;
 
                     userText = new GameObject("Text").AddComponent<TextMeshProUGUI>();
-                    userText.enableWordWrapping = false;
+                    userText.textWrappingMode = TextWrappingModes.NoWrap;
                     userText.alignment = TextAlignmentOptions.BottomRight;
                     userText.transform.SetParent(filmGroup.transform, false);
                     if (isMe((string)matched.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"]))
                     {
                         devText = new GameObject("gingerphoenix10:3").AddComponent<TextMeshProUGUI>();
-                        devText.enableWordWrapping = false;
+                        devText.textWrappingMode = TextWrappingModes.NoWrap;
                         devText.alignment = TextAlignmentOptions.BottomRight;
                         devText.transform.SetParent(filmGroup.transform, false);
                         devText.transform.localPosition = new Vector3(0, 35, 0);
@@ -141,7 +141,7 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
                 cam.GetComponent<ItemInstance>().instanceData.m_dataEntries.Add(globalCamera);
             }
         }
-        foreach (ItemInstance item in UnityEngine.Object.FindObjectsOfType<ItemInstance>())
+        foreach (ItemInstance item in UnityEngine.Object.FindObjectsByType<ItemInstance>(FindObjectsSortMode.InstanceID))
         {
             if (item.item.id != 2) continue;
             string hasPov = "-2";
@@ -154,7 +154,7 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
                     break;
                 }
                 Player matched = new();
-                foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsOfType<PlayerVisor>())
+                foreach (PlayerVisor vis in UnityEngine.Object.FindObjectsByType<PlayerVisor>(FindObjectsSortMode.InstanceID))
                 {
                     Player plr = vis.gameObject.GetComponent<Player>();
                     if (plr.GetComponent<PhotonView>().Owner.CustomProperties["SteamID"] as string == povCamera.plrID)
@@ -173,13 +173,12 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
                     hasPov = "-2";
                     cubeRenderer.materials[0].color = Color.black;
                     cubeRenderer.materials[1].color = Color.black;
-                    if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && POVPlugin.HostNameable)
+                    if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null)
                     {
-                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
-                    }
-                    else
-                    {
-                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
+                        if (POVPlugin.HostNameable)
+                            item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
+                        else
+                            item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
                     }
                     break;
                 }
@@ -201,13 +200,12 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
                     cube2Renderer.materials[1].color = Color.black;
                 }
 
-                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && POVPlugin.HostNameable)
+                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null)
                 {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Broken Camera";
-                }
-                else
-                {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
+                    if (POVPlugin.HostNameable)
+                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = matched.GetComponent<PhotonView>().Owner.NickName + "'s Broken Camera";
+                    else
+                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
                 }
             }
             if (hasPov == "-2")
@@ -222,13 +220,12 @@ public class UpdateScript : Photon.Pun.MonoBehaviourPunCallbacks
                 cube2Renderer.materials[0].color = Color.black;
                 cube2Renderer.materials[1].color = Color.black;
 
-                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null && POVPlugin.HostNameable)
+                if (item.gameObject.transform.parent && item.gameObject.transform.parent.GetComponent<Pickup>() != null)
                 {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
-                }
-                else
-                {
-                    item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
+                    if (POVPlugin.HostNameable)
+                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "?'s Broken Camera";
+                    else
+                        item.gameObject.transform.parent.GetComponent<Pickup>().hoverText = "Pickup Broken Camera";
                 }
             }
             else if (hasPov == "-1")
