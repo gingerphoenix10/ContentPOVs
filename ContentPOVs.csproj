@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <CWDir Condition=" '$(CWDir)' == '' ">C:\Program Files (x86)\Steam\steamapps\common\Content Warning</CWDir>
+        <Configurations>Native;BepInEx</Configurations>
+    </PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)' == 'BepInEx'">
+		<DefineConstants>BEPIN</DefineConstants>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			https://nuget.bepinex.dev/v3/index.json;
+			https://nuget.samboy.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+	</PropertyGroup>
+
+    <ItemGroup Condition="!$(DefineConstants.Contains('BEPIN'))">
+        <PackageReference Include="Krafs.Publicizer" Version="2.3.0" />
+        <Reference Include="$(CWDir)\Content Warning_Data\Managed\*.dll" Private="false" />
+        <Publicize Include="Assembly-CSharp" />
+    </ItemGroup>
+
+	<ItemGroup Condition="$(DefineConstants.Contains('BEPIN'))">
+		<PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+		<PackageReference Include="BepInEx.Core" Version="5.*" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+
+        <!-- I tried to use BepInEx publicizer, but that kept causing Assembly-CSharp to not load so idk, krafs works ig -->
+		<PackageReference Include="Krafs.Publicizer" Version="2.3.0" />
+		<Reference Include="$(CWDir)\Content Warning_Data\Managed\*.dll" Exclude="$(CWDir)\Content Warning_Data\Managed\Mono.Cecil*.dll" Private="false" />
+		<Publicize Include="Assembly-CSharp" />
+	</ItemGroup>
+
+    <Target Condition="!$(DefineConstants.Contains('BEPIN'))" Name="CopyOutputFileToGame" AfterTargets="Build">
+        <Copy SourceFiles="$(OutputPath)\$(AssemblyName).dll;preview.png" DestinationFolder="$(CWDir)\Plugins\$(MSBuildProjectName)" />
+    </Target>
+
+	<Target Condition="$(DefineConstants.Contains('BEPIN'))" Name="CopyOutputFileToGame" AfterTargets="Build">
+		<Copy SourceFiles="
+				manifest.json;
+				icon.png;
+				README.md;
+				$(OutputPath)\$(AssemblyName).dll"
+			  DestinationFiles="
+				$(CWDir)\BepInEx\plugins\$(MSBuildProjectName)\manifest.json;
+				$(CWDir)\BepInEx\plugins\$(MSBuildProjectName)\icon.png;
+				$(CWDir)\BepInEx\plugins\$(MSBuildProjectName)\README.md;
+				$(CWDir)\BepInEx\plugins\$(MSBuildProjectName)\plugins\$(AssemblyName).dll"
+		/>
+		<Copy SourceFiles="CHANGELOG.md"
+			  DestinationFiles="$(CWDir)\BepInEx\plugins\$(MSBuildProjectName)\CHANGELOG.md"
+			  Condition="Exists('CHANGELOG.md')"
+		/>
+	</Target>
+
+</Project>
