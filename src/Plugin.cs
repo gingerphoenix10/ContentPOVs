@@ -7,7 +7,7 @@ using System;
 
 namespace ContentPOVs;
 
-[ContentWarningPlugin("ContentPOVs", "1.3.7", false)]
+[ContentWarningPlugin("ContentPOVs", "1.3.8", false)]
 public class POVPlugin
 {
     internal static bool OwnerPickup = true;

@@ -50,7 +50,3 @@ This mod must be installed for all players, not just the host. May still partial
 ## Contributing
 If you have a bug report, feature request, enhancement, etc, feel free to [submit an issue on the GitHub page!](https://github.com/gingerphoenix10/ContentPOVs/issues) Any support helps.<br>
 If you have any programming knowledge and would like to help out with the project, feel free to fork the project and submit a pull request to help resolve issues, requests, etc.
-
-## Credits
-gingerphoenix10 - 1% of the code<br>
-ChatGPT - 99% of the code
