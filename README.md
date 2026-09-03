@@ -24,7 +24,7 @@ Capturing Everyone's POV one camera at a time
 - Display cameras' owner at the bottom right of each recording (toggleable)
 - Full [Virality](https://thunderstore.io/c/content-warning/p/MaxWasUnavailable/Virality/) support (4+ players, late joining)
 - Compatibility with most, if not all other Content Warning mods
-- Divides the amount of views you get by your player count, so the whole crew has to work together to reach quota
+- Divides the amount of views you get by your player count, so the whole crew has to work together to reach quota (toggleable)
 
 ## Installation
 
